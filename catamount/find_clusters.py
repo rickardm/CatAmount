@@ -148,20 +148,8 @@ class FCTrail(Trail):
 	def csv_report(self):
 		"""Create a CSV report describing the clusters that were found."""
 
-		output = 'Cluster_ID'
-		output += '\tStart_Date'
-		output += '\tEnd_Date'
-		output += '\tElapsed'
-		output += '\tCenter_X'
-		output += '\tCenter_Y'
-		output += '\tHome'
-		output += '\tAway'
-		output += '\tAll'
-		output += '\tAvg_Dist'
-		output += '\tMax_Excurs'
-		output += '\tFidelity'
-		output += '\n'
-		sys.stdout.write(output)
+		field_list = ['Cluster_ID', 'Start_Date', 'End_Date', 'Elapsed', 'Center_X', 'Centery_Y', 'Home', 'Away', 'All', 'Avg_Dist', 'Max_Excurs', 'Fidelity']
+		sys.stdout.write(','.join(field_list) + '\n')
 
 		for cluster in self.clusters:
 			cluster.csv_report()
@@ -241,20 +229,21 @@ class FCCluster(Cluster):
 	def csv_report(self):
 		"""Create one line of CSV output for this cluster."""
 
-		output = '{0}'.format(self.id)
-		output += '\t{0}'.format(self.start_dateobj.strftime(DATE_FMT_ISO))
-		output += '\t{0}'.format(self.end_dateobj.strftime(DATE_FMT_ISO))
-		output += '\t{0:0.2f}'.format(self.elapsed_time / 3600)
-		output += '\t{0:0.1f}'.format(self.x)
-		output += '\t{0:0.1f}'.format(self.y)
-		output += '\t{0}'.format(len(self.home_fixes))
-		output += '\t{0}'.format(len(self.away_fixes))
-		output += '\t{0}'.format(len(self.all_fixes))
-		output += '\t{0:0.1f}'.format(self.avg_distance)
-		output += '\t{0:0.1f}'.format(self.max_excursion)
-		output += '\t{0:0.1f}'.format(self.fidelity)
-		output += '\n'
-		sys.stdout.write(output)
+		field_list = [
+			self.id,
+			self.start_dateobj.strftime(DATE_FMT_ISO),
+			self.end_dateobj.strftime(DATE_FMT_ISO),
+			'{:0.2f}'.format(self.elapsed_time / 3600),
+			'{:0.1f}'.format(self.x),
+			'{:0.1f}'.format(self.y),
+			'{}'.format(len(self.home_fixes)),
+			'{}'.format(len(self.away_fixes)),
+			'{}'.format(len(self.all_fixes)),
+			'{:0.1f}'.format(self.avg_distance),
+			'{:0.1f}'.format(self.max_excursion),
+			'{:0.1f}'.format(self.fidelity)
+		]
+		sys.stdout.write(','.join(field_list) + '\n')
 
 	def descriptive_report(self, all_points):
 		"""Create a descriptive stanza for this cluster."""

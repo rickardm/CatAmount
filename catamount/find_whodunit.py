@@ -75,28 +75,13 @@ class FWDataPool(DataPool):
 	def csv_report(self):
 		"""Create a CSV report describing all the matches that were found."""
 
-		output = 'Status'
-		output += '\tCat_ID'
-		output += '\tDate'
-		output += '\tEast_N27'
-		output += '\tNorth_N27'
-		output += '\tCloseness'
-		output += '\tDistance'
-		output += '\tDelay'
-		output += '\n'
-		sys.stdout.write(output)
+		field_list = ['Status', 'Cat_ID', 'Date', 'East_N27', 'North_N27', 'Closeness', 'Distance', 'Delay']
+		sys.stdout.write(','.join(field_list) + '\n')
 
 		# First line will be the request data
-		output = 'Request'
-		output += '\t----'
-		output += '\t{0}'.format(self.dateobj.strftime(DATE_FMT_ISO))
-		output += '\t{0:0.1f}'.format(self.x)
-		output += '\t{0:0.1f}'.format(self.y)
-		output += '\t----'
-		output += '\t----'
-		output += '\t----'
-		output += '\n'
-		sys.stdout.write(output)
+		request_list = ['Request', '----', self.dateobj.strftime(DATE_FMT_ISO),
+			'{:0.1f}'.format(self.x), '{:0.1f}'.format(self.y), '----', '----', '----']
+		sys.stdout.write(','.join(request_list) + '\n')
 
 		for match in self.matches:
 			match.csv_report()
@@ -216,16 +201,17 @@ class Match(object):
 	def csv_report(self):
 		"""Create a CSV report describing this one match."""
 
-		output = '{0}'.format(self.status)
-		output += '\t{0}'.format(self.fix.catid)
-		output += '\t{0}'.format(self.fix.dateobj.strftime(DATE_FMT_ISO))
-		output += '\t{0}'.format(self.fix.x)
-		output += '\t{0}'.format(self.fix.y)
-		output += '\t{0:0.3f}'.format(self.closeness)
-		output += '\t{0:0.1f}'.format(self.distance)
-		output += '\t{0:0.1f}'.format(self.delay / 3600)
-		output += '\n'
-		sys.stdout.write(output)
+		field_list = [
+			self.status,
+			self.fix.catid,
+			self.fix.dateobj.strftime(DATE_FMT_ISO),
+			'{:0.1f}'.format(self.fix.x),
+			'{:0.1f}'.format(self.fix.y),
+			'{:0.3f}'.format(self.closeness),
+			'{:0.1f}'.format(self.distance),
+			'{:0.1f}'.format(self.delay / 3600)
+		]
+		sys.stdout.write(','.join(field_list) + '\n')
 
 	def descriptive_report(self):
 		"""Create a descriptive report describing this one match. """

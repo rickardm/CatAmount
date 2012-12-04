@@ -206,21 +206,8 @@ class FXDataPool(DataPool):
 	def csv_report(self):
 		"""Create a CSV report describing all the crossings that were found."""
 
-		output = 'Cross_ID'
-		output += '\tStart_Date'
-		output += '\tEnd_Date'
-		output += '\tElapsed'
-		output += '\tCenter_X'
-		output += '\tCenter_Y'
-		output += '\tNo._Cats'
-		output += '\tA_Time'
-		output += '\tA_Dist'
-		output += '\tB_Time'
-		output += '\tB_Dist'
-		output += '\tC_Time'
-		output += '\tC_Dist'
-		output += '\n'
-		sys.stdout.write(output)
+		field_list = ['Cross_ID', 'Start_Date', 'End_Date', 'Elapsed', 'Center_X', 'Center_Y', 'No._Cats', 'A_Time', 'A_Dist', 'B_Time', 'B_Dist', 'C_Time', 'C_Dist']
+		sys.stdout.write(','.join(field_list) + '\n')
 
 		for crossing in self.crossings:
 			crossing.csv_report()
@@ -371,25 +358,28 @@ class Crossing(Cluster):
 	def csv_report(self):
 		"""Create a CSV report describing this one crossing."""
 
-		output = '{0}'.format(self.id)
-		output += '\t{0}'.format(self.start_dateobj.strftime(DATE_FMT_ISO))
-		output += '\t{0}'.format(self.end_dateobj.strftime(DATE_FMT_ISO))
-		output += '\t{0:0.2f}'.format(self.elapsed_time / 3600)
-		output += '\t{0:0.1f}'.format(self.x)
-		output += '\t{0:0.1f}'.format(self.y)
-		output += '\t{0}'.format(len(self.catids))
+		field_list = [
+			self.id,
+			self.start_dateobj.strftime(DATE_FMT_ISO),
+			self.end_dateobj.strftime(DATE_FMT_ISO),
+			'{:0.2f}'.format(self.elapsed_time / 3600),
+			'{:0.1f}'.format(self.x),
+			'{:0.1f}'.format(self.y),
+			'{}'.format(len(self.catids))
+		]
+
 		for count in range(0, 3):
 			try:
 				close_meeting = self.closest_meetings[count]
 				first = close_meeting[0]
 				second = close_meeting[1]
-				output += '\t{0:0.2f}'.format(first.delay_from(second) / 3600)
-				output += '\t{0:0.2f}'.format(first.distance_from(second))
+				field_list.append('{:0.2f}'.format(first.delay_from(second) / 3600))
+				field_list.append('{:0.2f}'.format(first.distance_from(second)))
 			except IndexError:
-				output += '\t----'
-				output += '\t----'
-		output += '\n'
-		sys.stdout.write(output)
+				field_list.append('----')
+				field_list.append('----')
+
+		sys.stdout.write(','.join(field_list) + '\n')
 
 	def descriptive_report(self, all_points):
 		"""Create a descriptive report describing this one crossing."""

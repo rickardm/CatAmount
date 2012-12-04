@@ -125,9 +125,8 @@ class SurveyPool(object):
 	def csv_report(self):
 		"""For each survey, display any matching clusters that were found."""
 
-		# Display the CSV headers
-		header_line = 'ID,Avg_UTM_E,Avg_UTM_N,Avg_Date,Major_Prob,Minor_Prob,Best_Match,Secd_Match,Thrd_Match\n'
-		sys.stdout.write(header_line)
+		field_list = ['ID', 'Avg_UTM_E', 'Avg_UTM_N', 'Avg_Date', 'Major_Prob', 'Minor_Prob', 'Best_Match', 'Secd_Match', 'Thrd_Match']
+		sys.stdout.write(','.join(field_list) + '\n')
 
 		for survey in self.surveys:
 			survey.csv_report()
@@ -279,29 +278,31 @@ class Survey(object):
 	def csv_report(self):
 		"""Output one line of CSV output showing basic parameters and matching clusters."""
 
-		output = '{},'.format(self.attributes['ID'])
-		output += '{},{},'.format(self.x, self.y)
-		output += '{},'.format(self.dateobj)
+		field_list = [
+			self.attributes['ID'],
+			'{:0.1f}'.format(self.x),
+			'{:0.1f}'.format(self.y),
+			self.dateobj.strftime(DATE_FMT_ISO)
+		]
 
 		if self.major_problems:
-			output += '"{}",'.format(' '.join(self.major_problems))
+			field_list.append('"{}"'.format(' '.join(self.major_problems)))
 		else:
-			output += ','
+			field_list.append('')
 
 		if self.minor_problems:
-			output += '"{}",'.format(' '.join(self.minor_problems))
+			field_list.append('"{}"'.format(' '.join(self.minor_problems)))
 		else:
-			output += ','
+			field_list.append('')
 
 		if self.major_problems:
-			output += '"Survey has major problems, matching is not possible.",,,'
+			field_list.extend(['"Survey has major problems; matching is not possible."', '', '', ''])
 		else:
 			for index in range(0, 3):
 				try:
 					this_cluster = self.matching_clusters[index]
-					output += '{0}|{1}|{2:0.1f}|{3:0.1f},'.format(this_cluster.catid, this_cluster.id, this_cluster.x, this_cluster.y)
+					field_list.append('{0}|{1}|{2:0.1f}|{3:0.1f},'.format(this_cluster.catid, this_cluster.id, this_cluster.x, this_cluster.y))
 				except IndexError:
-					output += ','
+					field_list.append('')
 
-		output += '\n'
-		sys.stdout.write(output)
+		sys.stdout.write(','.join(field_list) + '\n')
