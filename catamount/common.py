@@ -1057,63 +1057,69 @@ def process_dates_for_filename(start_date, end_date):
 	output = ''
 
 	if start_date and end_date:
-		output += '-{0}_to_{1}'.format(start_date[0].strftime(DATE_FMT_ID_SHORT), end_date[0].strftime(DATE_FMT_ID_SHORT))
+		output += '{}_to_{}'.format(start_date[0].strftime(DATE_FMT_ID_SHORT), end_date[0].strftime(DATE_FMT_ID_SHORT))
 	elif start_date:
-		output += '-{0}_to_present'.format(start_date[0].strftime(DATE_FMT_ID_SHORT))
+		output += '{}_to_present'.format(start_date[0].strftime(DATE_FMT_ID_SHORT))
 	elif end_date:
-		output += '-beginning_to_{0}'.format(end_date[0].strftime(DATE_FMT_ID_SHORT))
+		output += 'beginning_to_{}'.format(end_date[0].strftime(DATE_FMT_ID_SHORT))
 
 	return output
 
 def create_cluster_filename(catid, start_date=False, end_date=False, clusterid=False):
 	"""Create a filename for cluster output based on essential settings."""
 
-	filename = 'clusters'
-	filename += '-{0}'.format(catid)
-	filename += process_dates_for_filename(start_date, end_date)
+	name_parts = ['clusters', catid]
+
+	date_part = process_dates_for_filename(start_date, end_date)
+	if date_part:
+		name_parts.append(date_part)
 
 	if clusterid:
-		filename += '-{0}'.format(clusterid)
+		name_parts.append(clusterid.replace('-', '').replace('_', ''))
 
-	return filename
+	return '_'.join(name_parts)
 
 def create_territory_filename(start_date=False, end_date=False, catids=False):
 	"""Create a filename for territory output based on essential settings."""
 
-	filename = 'territories'
-	filename += process_dates_for_filename(start_date, end_date)
+	name_parts = ['territories']
+
+	date_part = process_dates_for_filename(start_date, end_date)
+	if date_part:
+		name_parts.append(date_part)
 
 	if catids:
-		filename += '-{0}'.format('_'.join(catids))
+		name_parts.append('_'.join(catids))
 	else:
-		filename += '-all'
+		name_parts.append('all')
 
-	return filename
+	return '_'.join(name_parts)
 
 def create_crossing_filename(start_date=False, end_date=False, catids=False, crossingid=False):
 	"""Create a filename for crossing output based on essential settings."""
 
-	filename = 'crossings'
-	filename += process_dates_for_filename(start_date, end_date)
+	name_parts = ['crossings']
+
+	date_part = process_dates_for_filename(start_date, end_date)
+	if date_part:
+		name_parts.append(date_part)
 
 	if catids:
-		filename += '-{0}'.format('_'.join(catids))
+		name_parts.append('_'.join(catids))
 	else:
-		filename += '-all'
+		name_parts.append('all')
 
 	if crossingid:
-		filename += '-{0}'.format(crossingid)
+		name_parts.append(crossingid.replace('-', '').replace('_', ''))
 
-	return filename
+	return '_'.join(name_parts)
 
 def create_whodunit_filename(date, x, y):
 	"""Create a filename for whodunit output based on essential settings."""
 
-	filename = 'whodunit'
-	filename += '-{0}'.format(date[0].strftime(DATE_FMT_ID_SHORT))
-	filename += '-{0}'.format(x)
-	filename += '-{0}'.format(y)
-	return filename
+	name_parts = ['whodunit', date[0].strftime(DATE_FMT_ID_SHORT), str(x), str(y)]
+
+	return '_'.join(name_parts)
 
 
 # BEGIN SCRIPT
