@@ -216,14 +216,15 @@ class Match(object):
 	def descriptive_report(self):
 		"""Create a descriptive report describing this one match. """
 
-		output = '    {0}'.format(self.fix.catid)
-		output += '    {0}'.format(self.fix.dateobj.strftime(DATE_FMT_ISO))
-		output += '    {0} east'.format(self.fix.x)
-		output += '    {0} north'.format(self.fix.y)
-		output += '    {0:6.3f}'.format(self.closeness)
-		output += '    {0:7.1f} m'.format(self.distance)
-		output += '    {0:5.1f} h'.format(self.delay / 3600)
-		output += '\n'
-		sys.stdout.write(output)
+		field_list = [
+			self.fix.catid,
+			self.fix.dateobj.strftime(DATE_FMT_ISO),
+			'{:0.1f} east'.format(self.fix.x),
+			'{:0.1f} north'.format(self.fix.y),
+			'{:6.3f}'.format(self.closeness),
+			'{:6.1f} m'.format(self.distance),
+			'{:6.1f} h'.format(self.delay / 3600)
+		]
+		sys.stdout.write('    ' + ', '.join(field_list) + '\n')
 
 

@@ -704,7 +704,7 @@ class MainWindow(object):
 		self.whodunitframe.columnconfigure(3, weight=1)
 		self.whodunitframe.columnconfigure(4, weight=1)
 		self.whodunitframe.columnconfigure(5, weight=1)
-		self.whodunitframe.rowconfigure(5, weight=1)
+		self.whodunitframe.rowconfigure(6, weight=1)
 
 		# Column 0/1/2/3
 
@@ -786,11 +786,21 @@ class MainWindow(object):
 		self.whodunit_y_entry.grid(row=4, column=5, **self.default_grid_args)
 
 		# Row 5
+		self.whodunit_text_style_label = tk.Label(self.whodunitframe, text='Text output style')
+		self.whodunit_text_style_menu = tk.OptionMenu(
+			self.whodunitframe, self.whodunit_text_style,
+			'csv', 'descriptive'
+		)
+
+		self.whodunit_text_style_label.grid(row=5, column=4, **self.default_grid_args)
+		self.whodunit_text_style_menu.grid(row=5, column=5, **self.default_grid_args)
+
+		# Row 6
 		self.whodunit_go = tk.Button(
 			self.whodunitframe, text='Find Whodunit', command=self.launch_find_whodunit
 		)
 
-		self.whodunit_go.grid(row=5, column=4, rowspan=1, columnspan=2, padx=1, pady=1, sticky='WES')
+		self.whodunit_go.grid(row=6, column=4, rowspan=1, columnspan=2, padx=1, pady=1, sticky='WES')
 
 		self.whodunitframe.grid_remove()
 
