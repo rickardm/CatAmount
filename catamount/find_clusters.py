@@ -80,16 +80,19 @@ class FCTrail(Trail):
 						# Create a new cluster if necessary
 						if isinstance(current_item, Fix):
 							first_fix = current_item
+							first_fix.status = 'home'
 							current_item = FCCluster(first_fix, self.radius, self.time_cutoff, self.minimum_count, self.minimum_stay, self.legend_start_date, self.legend_end_date)
 
 						# Add any away points that may have accumulated.
 						# This should come before adding the home fix, for chronology
 						for away_fix in potential_away_fixes:
-							current_item.add_fix(away_fix, 'away')
+							away_fix.status = 'away'
+							current_item.add_fix(away_fix)
 
 						# Add the matching point to the cluster.
 						# This should come after adding each away fix, for chronology
-						current_item.add_fix(fix, 'home')
+						fix.status = 'home'
+						current_item.add_fix(fix)
 
 						# Empty the list of potential away fixes
 						potential_away_fixes = list()
@@ -145,14 +148,27 @@ class FCTrail(Trail):
 				return cluster
 		return False
 
-	def csv_report(self):
+	def csv_report(self, all_points):
 		"""Create a CSV report describing the clusters that were found."""
 
-		field_list = ['Cluster_ID', 'Start_Date', 'End_Date', 'Elapsed', 'Center_X', 'Centery_Y', 'Home', 'Away', 'All', 'Avg_Dist', 'Max_Excurs', 'Fidelity']
+		field_list = ['Cluster_ID', 'Start_Date', 'End_Date', 'Elapsed', 'Center_X', 'Center_Y', 'Home', 'Away', 'All', 'Avg_Dist', 'Max_Excurs', 'Fidelity']
 		sys.stdout.write(','.join(field_list) + '\n')
 
 		for cluster in self.clusters:
 			cluster.csv_report()
+
+		if all_points:
+			sys.stdout.write('\n')
+
+			fix_field_list = ['Cluster_ID', 'Fix_ID', 'Date', 'X', 'Y', 'Status', 'Day_Pd']
+			sys.stdout.write(','.join(fix_field_list) + '\n')
+
+			empty_field_list = ['', '', '', '', '', '', '']
+
+			for cluster in self.clusters:
+				cluster.fixes_csv_report()
+
+				sys.stdout.write(','.join(empty_field_list) + '\n')
 
 	def descriptive_report(self, all_points):
 		"""Create a descriptive report describing the clusters that were found."""
@@ -245,32 +261,34 @@ class FCCluster(Cluster):
 		]
 		sys.stdout.write(','.join(field_list) + '\n')
 
+	def fixes_csv_report(self):
+		"""Have each fix in this cluster do a csv report."""
+
+		for fix in self.all_fixes:
+			fix.csv_report(self.id)
+
 	def descriptive_report(self, all_points):
 		"""Create a descriptive stanza for this cluster."""
 
-		output = 'Cluster {0}\n'.format(self.id)
-		output += '  Dates: From {0} to {1} (utc)\n'.format(self.start_dateobj.strftime(DATE_FMT_ISO), self.end_dateobj.strftime(DATE_FMT_ISO))
-		output += '  Elapsed Time: {0:0.2f} hours\n'.format(self.elapsed_time / 3600)
-		output += '  Center Location: {0:0.2f} east, {1:0.2f} north (NAD27)\n'.format(self.x, self.y)
-		output += '  Points: {0} in cluster, {1} away from cluster, {2} total\n'.format(len(self.home_fixes), len(self.away_fixes), len(self.all_fixes))
-		output += '  Home/Away Pattern (0 = home, . = away): "{0}"\n'.format(self.away_pattern)
-		output += '  Average Distance From Center (Inside Cluster): {0:0.1f} meters\n'.format(self.avg_distance)
+		output = 'Cluster {}\n'.format(self.id)
+		output += '  Dates: From {} to {} (utc)\n'.format(self.start_dateobj.strftime(DATE_FMT_ISO), self.end_dateobj.strftime(DATE_FMT_ISO))
+		output += '  Elapsed Time: {:0.2f} hours\n'.format(self.elapsed_time / 3600)
+		output += '  Center Location: {:0.2f} east, {:0.2f} north (NAD27)\n'.format(self.x, self.y)
+		output += '  Points: {} in cluster, {} away from cluster, {} total\n'.format(len(self.home_fixes), len(self.away_fixes), len(self.all_fixes))
+		output += '  Home/Away Pattern (O = home, . = away): "{}"\n'.format(self.away_pattern)
+		output += '  Average Distance From Center (Inside Cluster): {:0.1f} meters\n'.format(self.avg_distance)
 		if (self.away_fixes):
-			output += '  Max Excursion From Center (Outside Cluster): {0:0.1f} meters\n'.format(self.max_excursion)
+			output += '  Max Excursion From Center (Outside Cluster): {:0.1f} meters\n'.format(self.max_excursion)
 		else:
 			output += '  Max Excursion From Center (Outside Cluster): None\n'
-		output += '  Site Fidelity ((No. Inside / Total No.) * 100): {0:0.2f}%\n'.format(self.fidelity)
-		output += '  Average Time Between Points: {0:0.1f} hours\n'.format((self.elapsed_time / (len(self.all_fixes) - 1)) / 3600.0)
+		output += '  Site Fidelity ((No. Inside / Total No.) * 100): {:0.2f}%\n'.format(self.fidelity)
+		output += '  Average Time Between Points: {:0.1f} hours\n'.format((self.elapsed_time / (len(self.all_fixes) - 1)) / 3600.0)
 		sys.stdout.write(output)
 
-		if (all_points):
+		if all_points:
 			sys.stdout.write('  All Points In This Cluster:\n')
 			for fix in self.all_fixes:
-				fix_type = self.home_or_away['{0}-{1}'.format(fix.catid, fix.time)]
-				if fix_type == 'home':
-					fix.descriptive_report('0')
-				else:
-					fix.descriptive_report('.')
+				fix.descriptive_report()
 
 		sys.stdout.write('\n')
 

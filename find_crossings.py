@@ -86,8 +86,8 @@ argman.add_argument(
 argman.add_argument(
 	'-x', '--text_style',
 	dest='text_style', action='store',
-	choices=['csv', 'descriptive', 'descriptive-all'], default='csv',
-	help='Text output style: csv, descriptive, descriptive-all.'
+	choices=['csv', 'csv-all', 'descriptive', 'descriptive-all'], default='csv',
+	help='Text output style: csv, csv-all, descriptive, descriptive-all.'
 )
 
 argman.add_argument(
@@ -215,8 +215,10 @@ else:
 		datapool.descriptive_report(True)
 	elif args.text_style == 'descriptive':
 		datapool.descriptive_report(False)
+	elif args.text_style == 'csv-all':
+		datapool.csv_report(True)
 	else:
-		datapool.csv_report()
+		datapool.csv_report(False)
 
 	# Account of what was done
 	sys.stderr.write('{0} crossings found.\n'.format(len(datapool.crossings)))

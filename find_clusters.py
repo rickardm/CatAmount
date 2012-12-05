@@ -101,8 +101,8 @@ argman.add_argument(
 argman.add_argument(
 	'-x', '--text_style',
 	dest='text_style', action='store',
-	choices=['csv', 'descriptive', 'descriptive-all'], default='csv',
-	help='Text output style: csv, descriptive, descriptive-all'
+	choices=['csv', 'csv-all', 'descriptive', 'descriptive-all'], default='csv',
+	help='Text output style: csv, csv-all, descriptive, descriptive-all'
 )
 
 argman.add_argument(
@@ -226,8 +226,10 @@ else:
 		trail.descriptive_report(True)
 	elif args.text_style == 'descriptive':
 		trail.descriptive_report(False)
+	elif args.text_style == 'csv-all':
+		trail.csv_report(True)
 	else:
-		trail.csv_report()
+		trail.csv_report(False)
 
-	# Accounting of what was done
+	# Account of what was done
 	sys.stderr.write('{0} clusters found.\n'.format(len(trail.clusters)))

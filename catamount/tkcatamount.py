@@ -447,7 +447,7 @@ class MainWindow(object):
 		self.cluster_text_style_label = tk.Label(self.clusterframe, text='Text output style')
 		self.cluster_text_style_menu = tk.OptionMenu(
 			self.clusterframe, self.cluster_text_style,
-			'csv', 'descriptive', 'descriptive-all'
+			'csv', 'csv-all', 'descriptive', 'descriptive-all'
 		)
 
 		self.cluster_text_style_label.grid(row=7, column=4, **self.value_grid_args)
@@ -675,7 +675,7 @@ class MainWindow(object):
 		self.crossing_text_style_label = tk.Label(self.crossingframe, text='Text output style')
 		self.crossing_text_style_menu = tk.OptionMenu(
 			self.crossingframe, self.crossing_text_style,
-			'csv', 'descriptive', 'descriptive-all'
+			'csv', 'csv-all', 'descriptive', 'descriptive-all'
 		)
 
 		self.crossing_text_style_label.grid(row=9, column=2, **self.default_grid_args)

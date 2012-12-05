@@ -7,7 +7,7 @@
 * Organize code to use a "project" of related modules, to make the
   code more modular, and for the more immediate need of reusing the
   clustering from find_clusters.
-* Revise the User Guide to reflect the receent changes
+* Revise the User Guide to reflect the recent changes
 
 2012-05-11 21:42 utc - MRR - 13417.629
 --------------------------------------

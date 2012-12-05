@@ -85,9 +85,11 @@ class FXDataPool(DataPool):
 
 					# If time is okay and distance is okay, we found a match
 					if fix.distance_from(current_item) <= self.radius:
+
 						# Create a new cluster if necessary
 						if isinstance(current_item, Fix):
 							first_fix = current_item
+							first_fix.status = 'home'
 							current_item = Cluster(first_fix)
 							cats_involved[first_fix.catid] = 1
 
@@ -98,10 +100,12 @@ class FXDataPool(DataPool):
 						for away_fix in potential_away_fixes:
 							# Only add away fixes if they are for a cat already involved in this cluster
 							if away_fix.catid in cats_involved:
-								current_item.add_fix(away_fix, 'away')
+								away_fix.status = 'away'
+								current_item.add_fix(away_fix)
 
 						# Add the matched fix to the cluster
-						current_item.add_fix(fix, 'home')
+						fix.status = 'home'
+						current_item.add_fix(fix)
 
 						# Empty the potential away points list
 						potential_away_fixes = list()
@@ -203,7 +207,7 @@ class FXDataPool(DataPool):
 				seen[catid] = 1
 		self.catids = sorted(catids)
 
-	def csv_report(self):
+	def csv_report(self, all_points):
 		"""Create a CSV report describing all the crossings that were found."""
 
 		field_list = ['Cross_ID', 'Start_Date', 'End_Date', 'Elapsed', 'Center_X', 'Center_Y', 'No._Cats', 'A_Time', 'A_Dist', 'B_Time', 'B_Dist', 'C_Time', 'C_Dist']
@@ -211,6 +215,19 @@ class FXDataPool(DataPool):
 
 		for crossing in self.crossings:
 			crossing.csv_report()
+
+		if all_points:
+			sys.stdout.write('\n')
+
+			fix_field_list = ['Cross_ID', 'Cat_ID', 'Fix_ID', 'Date', 'X', 'Y', 'Status', 'Day_Pd']
+			sys.stdout.write(','.join(fix_field_list) + '\n')
+
+			empty_field_list = ['', '', '', '', '', '', '', '']
+
+			for crossing in self.crossings:
+				crossing.fixes_csv_report()
+
+				sys.stdout.write(','.join(empty_field_list) + '\n')
 
 	def descriptive_report(self, all_points):
 		"""Create a descriptive report describing all the crossings that were found."""
@@ -381,6 +398,12 @@ class Crossing(Cluster):
 
 		sys.stdout.write(','.join(field_list) + '\n')
 
+	def fixes_csv_report(self):
+		"""Have each fix in this crossing do a csv report."""
+
+		for fix in self.all_fixes:
+			fix.csv_report(self.id, cat_id=True)
+
 	def descriptive_report(self, all_points):
 		"""Create a descriptive report describing this one crossing."""
 
@@ -401,13 +424,9 @@ class Crossing(Cluster):
 		sys.stdout.write(output)
 	
 		if all_points:
-			sys.stdout.write('  All Points:\n')
+			sys.stdout.write('  All Points In This Crossing:\n')
 			for fix in self.all_fixes:
-				fix_type = self.home_or_away['{0}-{1}'.format(fix.catid, fix.time)]
-				if fix_type == 'home':
-					fix.descriptive_report('0  {0}'.format(fix.catid))
-				else:
-					fix.descriptive_report('.  {0}'.format(fix.catid))
+				fix.descriptive_report(cat_id=True)
 
 		sys.stdout.write('\n')
 

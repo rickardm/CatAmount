@@ -527,6 +527,9 @@ class Fix(object):
 		self.csvrow = csvrow
 		self.set_values_from_csv()
 
+		self.status = None # home or away
+		self.day_period = 'FIXME' # day or night
+
 	def __repr__(self):
 		return 'Fix(csvrow={0!r})'.format(self.csvrow)
 
@@ -558,10 +561,43 @@ class Fix(object):
 		else:
 			return math.fabs(self.time - other.time)
 
-	def descriptive_report(self, add_text=''):
+	def csv_report(self, parent_id, cat_id=False):
+		"""Create one line of csv output representing this fix."""
+
+		field_list = [
+			parent_id,
+			self.id,
+			self.dateobj.strftime(DATE_FMT_ISO),
+			'{:0.1f}'.format(self.x),
+			'{:0.1f}'.format(self.y),
+			self.status,
+			self.day_period
+		]
+
+		# Add the cat ID if requested. Crossings need this.
+		if cat_id:
+			field_list.insert(1, self.catid)
+
+		sys.stdout.write(','.join(field_list) + '\n')
+
+	def descriptive_report(self, cat_id=False):
 		"""Describe this fix in descriptive text output."""
 
-		sys.stdout.write('    {0}    {1} east    {2} north    {3}\n'.format(self.dateobj.strftime(DATE_FMT_ISO), self.x, self.y, add_text))
+		short_status = {'home': 'O', 'away': '.'}
+
+		field_list = [
+			self.id,
+			self.dateobj.strftime(DATE_FMT_ISO),
+			'{:0.1f}'.format(self.x),
+			'{:0.1f}'.format(self.y),
+			short_status[self.status]
+		]
+
+		# Add the cat ID if requested. Crossings need this.
+		if cat_id:
+			field_list.insert(0, self.catid)
+
+		sys.stdout.write('    ' + ', '.join(field_list) + '\n')
 
 	def calculate_angle_and_distance(self, other):
 		"""Calculate the angle and angular distance of this fix from an object."""
@@ -713,15 +749,15 @@ class Cluster(GraphicBase):
 		else:
 			return math.fabs(self.start_time - other.time)
 
-	def add_fix(self, fix, home_or_away):
+	def add_fix(self, fix):
 		"""Incorporate a new fix into the cluster."""
 
 		self.all_fixes.append(fix)
 
-		if (home_or_away == 'home'):
+		if (fix.status == 'home'):
 			self.home_fixes.append(fix)
 			self.recalculate_core_data()
-		elif (home_or_away == 'away'):
+		elif (fix.status == 'away'):
 			self.away_fixes.append(fix)
 
 	def recalculate_core_data(self):
@@ -757,33 +793,24 @@ class Cluster(GraphicBase):
 		self.spread_x = self.max_x - self.min_x
 		self.spread_y = self.max_y - self.min_y
 
-		self.home_or_away = dict()
-
 		sum_distance = 0
 		for home_fix in self.home_fixes:
-			self.home_or_away['{0}-{1}'.format(home_fix.catid, home_fix.time)] = 'home'
-
 			sum_distance += home_fix.distance_from(self)
 		self.avg_distance = sum_distance / len(self.home_fixes)
 
 		self.max_excursion = 0
 		for away_fix in self.away_fixes:
-			self.home_or_away['{0}-{1}'.format(away_fix.catid, away_fix.time)] = 'away'
-
 			fix_excursion = away_fix.distance_from(self)
 			if fix_excursion > self.max_excursion:
 				self.max_excursion = fix_excursion
 
 		self.fidelity = 100.0 * (float(len(self.home_fixes)) / len(self.all_fixes))
 
-		home_or_away_keys = self.home_or_away.keys()
-		home_or_away_keys.sort()
-		self.away_pattern = ''
-		for fix_key in home_or_away_keys:
-			if self.home_or_away[fix_key] == 'home':
-				self.away_pattern += 'O'
-			elif self.home_or_away[fix_key] == 'away':
-				self.away_pattern += '.'
+		short_status = {'home': 'O', 'away': '.'}
+		away_pattern = ''
+		for fix in self.all_fixes:
+			away_pattern += short_status[fix.status]
+		self.away_pattern = away_pattern
 
 
 class DataPool(GraphicBase):
