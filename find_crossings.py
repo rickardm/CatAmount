@@ -25,6 +25,7 @@
 # IMPORT
 
 from catamount.find_crossings import *
+from catamount.sun_metrics import *
 
 
 # BEGIN SCRIPT
@@ -108,6 +109,9 @@ args = argman.parse_args()
 args.radius = constrain_integer(args.radius, 0, 1000)
 args.time_cutoff = constrain_integer(args.time_cutoff, 0, 31536000)
 
+# Create a SunMetrics object so any fixes can compute day and night
+sun_metrics = SunMetrics()
+
 # Open and process the data file
 with open(args.datafile_path, 'rb') as datafile:
 	csvrows = csvreader(datafile)
@@ -126,7 +130,7 @@ with open(args.datafile_path, 'rb') as datafile:
 	# For every row, create a Fix object and add it to the DataPool
 	for csvrow in csvrows:
 		try:
-			new_fix = Fix(csvrow)
+			new_fix = Fix(csvrow, sun_metrics)
 		except ValueError:
 			sys.stderr.write('CSV row doesn\'t look like data: {0}\n'.format(csvrow))
 			continue

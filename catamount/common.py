@@ -523,12 +523,14 @@ class Fix(object):
 	fix involves only one cat. Each fix can do basic procedures such
 	as calculate its distance or time from another fix."""
 
-	def __init__(self, csvrow):
+	def __init__(self, csvrow, sun_metrics):
 		self.csvrow = csvrow
-		self.set_values_from_csv()
-
+		self.sun_metrics = sun_metrics
 		self.status = None # home or away
-		self.day_period = 'FIXME' # day or night
+		self.day_period = None # day or night
+
+		self.set_values_from_csv()
+		self.determine_day_or_night()
 
 	def __repr__(self):
 		return 'Fix(csvrow={0!r})'.format(self.csvrow)
@@ -545,6 +547,12 @@ class Fix(object):
 		self.time = mktime(self.dateobj.timetuple())
 		self.x = float(self.csvrow[7])
 		self.y = float(self.csvrow[6])
+
+	def determine_day_or_night(self):
+		if self.sun_metrics.is_daylight(self.dateobj, 'utc'):
+			self.day_period = 'day'
+		else:
+			self.day_period = 'night'
 
 	def distance_from(self, other):
 		"""Calculate the distance of this fix from another object."""
@@ -590,7 +598,8 @@ class Fix(object):
 			self.dateobj.strftime(DATE_FMT_ISO),
 			'{:0.1f}'.format(self.x),
 			'{:0.1f}'.format(self.y),
-			short_status[self.status]
+			short_status[self.status],
+			self.day_period
 		]
 
 		# Add the cat ID if requested. Crossings need this.
