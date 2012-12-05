@@ -523,7 +523,7 @@ class Fix(object):
 	fix involves only one cat. Each fix can do basic procedures such
 	as calculate its distance or time from another fix."""
 
-	def __init__(self, csvrow, sun_metrics):
+	def __init__(self, csvrow, sun_metrics=False):
 		self.csvrow = csvrow
 		self.sun_metrics = sun_metrics
 		self.status = None # home or away
@@ -549,6 +549,10 @@ class Fix(object):
 		self.y = float(self.csvrow[6])
 
 	def determine_day_or_night(self):
+		# Default is to not calculate day vs. night
+		if not self.sun_metrics:
+			return False
+
 		if self.sun_metrics.is_daylight(self.dateobj, 'utc'):
 			self.day_period = 'day'
 		else:
