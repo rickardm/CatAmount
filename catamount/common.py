@@ -43,7 +43,7 @@ import ImageFont
 # CONSTANTS/GLOBALS
 
 APP_NAME = 'CatAmount'
-APP_VERSION = '13518.834'
+APP_VERSION = '13625.682'
 APP_COPYRIGHT = 'Copyright (C) 2012 Michael Rickard'
 
 DATE_FMT_ID = '%Y%m%d-%H%M'
