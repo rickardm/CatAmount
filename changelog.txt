@@ -1,3 +1,20 @@
+2012-12-05 22:42 utc - MRR - 13625.682
+--------------------------------------
+* Remove all hyphens from formulated file names, because ArcGIS
+  doesn't allow them.
+* Change all CSV output to be separated by commas rather than tabs.
+* Improve the way CSV and descriptive output is formulated.
+* Change home/away to be an attribute of a Fix, rather than a cluster
+  keeping a list of home and away points.
+* Add sun_metrics module, which gives the ability to differentiate
+  between night and day for any given date and location.
+* Add output format "csv-all" to Find Clusters and Find Crossings.
+  These provide csv output of every point in a cluster or crossing.
+* For Find Clusters and Find Crossings, have each Fix determine if it
+  is a day or night datum.
+* Change the CSV and descriptive output of a Fix to include day/night
+  determinations.
+
 2012-08-21 02:22 utc - MRR - 13518.834
 --------------------------------------
 * Change the main data file format from tab-separated to comma-separated
@@ -7,31 +24,31 @@
 * Organize code to use a "project" of related modules, to make the
   code more modular, and for the more immediate need of reusing the
   clustering from find_clusters.
-* Revise the User Guide to reflect the recent changes
+* Revise the User Guide to reflect the recent changes.
 
 2012-05-11 21:42 utc - MRR - 13417.629
 --------------------------------------
 * Change time measurements from days to hours to provide the precision
-  needed by researchers
+  needed by researchers.
 * In the GUI, provide "major" and "minor" incrementing buttons, to
-  make incrementing the settings both fast and accurate
-* Change the default text format from "descriptive" to "csv"
+  make incrementing the settings both fast and accurate.
+* Change the default text format from "descriptive" to "csv".
 * Make the text window wider to break fewer lines when using CSV
-  output
+  output.
 * Add new major function, find_whodunit, for finding the cat when you
-  know the location and time
+  know the location and time.
 * Add GUI elements necessary to use find_whodunit feature
-* Various efficiencies to the code
-* Refactoring the code for style issues
+* Various efficiencies to the code.
+* Refactoring the code for style issues.
 * Revise the User Guide to reflect the changes mentioned
-  (find_whodunit, days->hours, descriptive->csv)
+  (find_whodunit, days->hours, descriptive->csv).
 
 2012-05-02 18:10 utc - MRR - 13408.492
 --------------------------------------
 * Fix bug in Find Clusters where when csv output is selected, save as
-  file name should end with ".csv"
+  file name should end with ".csv".
 * Adjust csv headers for integration with Arcmap: 10 characters max,
-  no spaces, no symbols, can't start with numeral
+  no spaces, no symbols, can't start with numeral.
 
 
 2012-05-01 17:35 utc - MRR - 13407.464
