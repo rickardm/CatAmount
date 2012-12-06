@@ -189,7 +189,7 @@ datapool.find_catids()
 datapool.find_cat_colors()
 
 # Get image name and path ready
-imagename = catcm.create_crossing_filename(args.start_date, args.end_date, args.catids, args.crossingid)
+imagename = catfx.create_filename(args.start_date, args.end_date, args.catids, args.crossingid)
 imagepath = os.path.join(args.outdir_path, imagename + '.png')
 
 # Prepare date limiting strings for use in image legends

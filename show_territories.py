@@ -161,7 +161,7 @@ datapool.find_catids()
 datapool.find_cat_colors()
 
 # Create an image
-imagename = catcm.create_territory_filename(args.start_date, args.end_date, args.catids)
+imagename = catst.create_filename(args.start_date, args.end_date, args.catids)
 imagepath = os.path.join(args.outdir_path, imagename + '.png')
 
 # Prepare date limiting strings for use in image legends

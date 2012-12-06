@@ -1051,7 +1051,7 @@ def constrain_integer(original_value, minimum_value, maximum_value):
 		return maximum_value
 
 def process_dates_for_filename(start_date, end_date):
-	"""Produce a date string suitable for use in a file name."""
+	"""Produce a date string suitable for use in file names."""
 
 	output = ''
 
@@ -1064,61 +1064,7 @@ def process_dates_for_filename(start_date, end_date):
 
 	return output
 
-def create_cluster_filename(catid, start_date=False, end_date=False, clusterid=False):
-	"""Create a filename for cluster output based on essential settings."""
 
-	name_parts = ['clusters', catid]
-
-	date_part = process_dates_for_filename(start_date, end_date)
-	if date_part:
-		name_parts.append(date_part)
-
-	if clusterid:
-		name_parts.append(clusterid.replace('-', '').replace('_', ''))
-
-	return '_'.join(name_parts)
-
-def create_territory_filename(start_date=False, end_date=False, catids=False):
-	"""Create a filename for territory output based on essential settings."""
-
-	name_parts = ['territories']
-
-	date_part = process_dates_for_filename(start_date, end_date)
-	if date_part:
-		name_parts.append(date_part)
-
-	if catids:
-		name_parts.append('_'.join(catids))
-	else:
-		name_parts.append('all')
-
-	return '_'.join(name_parts)
-
-def create_crossing_filename(start_date=False, end_date=False, catids=False, crossingid=False):
-	"""Create a filename for crossing output based on essential settings."""
-
-	name_parts = ['crossings']
-
-	date_part = process_dates_for_filename(start_date, end_date)
-	if date_part:
-		name_parts.append(date_part)
-
-	if catids:
-		name_parts.append('_'.join(catids))
-	else:
-		name_parts.append('all')
-
-	if crossingid:
-		name_parts.append(crossingid.replace('-', '').replace('_', ''))
-
-	return '_'.join(name_parts)
-
-def create_whodunit_filename(date, x, y):
-	"""Create a filename for whodunit output based on essential settings."""
-
-	name_parts = ['whodunit', date[0].strftime(DATE_FMT_ID_SHORT), str(x), str(y)]
-
-	return '_'.join(name_parts)
 
 
 # BEGIN SCRIPT

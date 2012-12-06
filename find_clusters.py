@@ -196,7 +196,7 @@ trail.find_clusters()
 trail.calculate_cluster_averages()
 
 # Get image name and path ready
-imagename = catcm.create_cluster_filename(args.catid, args.start_date, args.end_date, args.clusterid)
+imagename = catfc.create_filename(args.catid, args.start_date, args.end_date, args.clusterid)
 imagepath = os.path.join(args.outdir_path, imagename + '.png')
 
 # Prepare date limiting strings for use in image legends

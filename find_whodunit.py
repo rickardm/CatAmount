@@ -179,7 +179,7 @@ datapool.find_catids()
 datapool.find_cat_colors()
 
 # Get image name and path ready
-imagename = catcm.create_whodunit_filename(args.date, args.x, args.y)
+imagename = catfw.create_filename(args.date, args.x, args.y)
 imagepath = os.path.join(args.outdir_path, imagename + '.png')
 
 # Prepare date for legend

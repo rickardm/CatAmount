@@ -310,3 +310,11 @@ class Survey(object):
 					field_list.append('')
 
 		sys.stdout.write(','.join(field_list) + '\n')
+
+
+# FUNCTIONS
+
+def create_filename():
+	"""Create a filename for match_survey text output."""
+
+	return 'match_survey_to_cluster_{}'.format(datetime.datetime.now().strftime(catcm.DATE_FMT_ID_SHORT))

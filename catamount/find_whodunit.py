@@ -231,3 +231,11 @@ class Match(object):
 		sys.stdout.write('    ' + ', '.join(field_list) + '\n')
 
 
+# FUNCTIONS
+
+def create_filename(date, x, y):
+	"""Create a filename for find_whodunit text and image output."""
+
+	name_parts = ['whodunit', date[0].strftime(catcm.DATE_FMT_ID_SHORT), str(x), str(y)]
+
+	return '_'.join(name_parts)

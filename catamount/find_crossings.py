@@ -517,3 +517,23 @@ class Crossing(catcm.Cluster):
 			self.fgdraw.point((img_x, img_y), catcm.image_colors['fg'])
 
 
+# FUNCTIONS
+
+def create_filename(start_date=False, end_date=False, catids=False, crossingid=False):
+	"""Create a filename for find_crossing text and image output."""
+
+	name_parts = ['crossings']
+
+	date_part = catcm.process_dates_for_filename(start_date, end_date)
+	if date_part:
+		name_parts.append(date_part)
+
+	if catids:
+		name_parts.append('_'.join(catids))
+	else:
+		name_parts.append('all')
+
+	if crossingid:
+		name_parts.append(crossingid.replace('-', '').replace('_', ''))
+
+	return '_'.join(name_parts)

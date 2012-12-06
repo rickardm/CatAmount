@@ -34,6 +34,11 @@ import ImageTk
 import subprocess
 
 import catamount.common as catcm
+import catamount.find_clusters as catfc
+import catamount.find_crossings as catfx
+import catamount.find_whodunit as catfw
+import catamount.match_survey_to_cluster as catms
+import catamount.show_territories as catst
 
 # CLASSES
 
@@ -1118,7 +1123,7 @@ class MainWindow(object):
 			cluster_args.extend(['--clusterid', self.cluster_clusterid.get()])
 
 
-		cluster_filename = catcm.create_cluster_filename(
+		cluster_filename = catfc.create_filename(
 			self.cluster_catid.get(), cluster_start_date, cluster_end_date, self.cluster_clusterid.get()
 		)
 		self.call_script(cluster_args, cluster_filename, 'find_clusters')
@@ -1152,7 +1157,7 @@ class MainWindow(object):
 		if territory_end_date:
 			territory_args.extend(['--end_date', self.territory_end_date.get()])
 
-		territory_filename = catcm.create_territory_filename(
+		territory_filename = catst.create_filename(
 			territory_start_date, territory_end_date, territory_catids
 		)
 		self.call_script(territory_args, territory_filename, 'show_territories')
@@ -1190,7 +1195,7 @@ class MainWindow(object):
 		if self.crossing_crossingid.get():
 			crossing_args.extend(['--crossingid', self.crossing_crossingid.get()])
 
-		crossing_filename = catcm.create_crossing_filename(
+		crossing_filename = catfx.create_filename(
 			crossing_start_date, crossing_end_date, crossing_catids, self.crossing_crossingid.get()
 		)
 		self.call_script(crossing_args, crossing_filename, 'find_crossings')
@@ -1208,7 +1213,7 @@ class MainWindow(object):
 		whodunit_args.extend(['--y_coordinate', self.whodunit_y.get()])
 		whodunit_args.extend(['--text_style', self.whodunit_text_style.get()])
 
-		whodunit_filename = catcm.create_whodunit_filename(
+		whodunit_filename = catfw.create_filename(
 			whodunit_date, self.whodunit_x.get(), self.whodunit_y.get()
 		)
 		self.call_script(whodunit_args, whodunit_filename, 'find_whodunit')
@@ -1221,7 +1226,7 @@ class MainWindow(object):
 		matchsurvey_args.extend(['--radius', self.remove_units(self.matchsurvey_radius.get())])
 		matchsurvey_args.extend(['--time_cutoff', self.remove_units(self.matchsurvey_radius.get())])
 
-		matchsurvey_filename = 'match_survey_to_cluster'
+		matchsurvey_filename = catms.create_filename()
 		self.call_script(matchsurvey_args, matchsurvey_filename, 'match_survey_to_cluster')
 
 	def show_about_window(self):
@@ -1369,8 +1374,8 @@ class TextWindow(object):
 			'initialdir': dirname,
 			'initialfile': self.initial_filename,
 			'title': 'Save text as a new file.',
-			'filetypes': [('Text files', '.txt'), ('CSV files', '.csv'), ('All files', '.*')],
-			'defaultextension': '.txt'
+			'filetypes': [('CSV files', '.csv'), ('Text files', '.txt'), ('All files', '.*')],
+			'defaultextension': '.csv'
 		}
 		filename = tkfd.asksaveasfilename(**fileoptions)
 		if filename:

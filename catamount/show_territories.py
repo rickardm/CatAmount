@@ -130,4 +130,20 @@ class STDataPool(catcm.DataPool):
 			)
 
 
+# FUNCTIONS
 
+def create_filename(start_date=False, end_date=False, catids=False):
+	"""Create a filename for show_territory text and image output."""
+
+	name_parts = ['territories']
+
+	date_part = catcm.process_dates_for_filename(start_date, end_date)
+	if date_part:
+		name_parts.append(date_part)
+
+	if catids:
+		name_parts.append('_'.join(catids))
+	else:
+		name_parts.append('all')
+
+	return '_'.join(name_parts)

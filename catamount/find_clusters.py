@@ -353,4 +353,18 @@ class FCCluster(catcm.Cluster):
 			self.fgdraw.point((pt_img_x, pt_img_y), catcm.image_colors['fg'])
 
 
+# FUNCTIONS
 
+def create_filename(catid, start_date=False, end_date=False, clusterid=False):
+	"""Create a filename for find_cluster text and image output."""
+
+	name_parts = ['clusters', catid]
+
+	date_part = catcm.process_dates_for_filename(start_date, end_date)
+	if date_part:
+		name_parts.append(date_part)
+
+	if clusterid:
+		name_parts.append(clusterid.replace('-', '').replace('_', ''))
+
+	return '_'.join(name_parts)
