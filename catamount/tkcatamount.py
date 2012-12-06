@@ -24,12 +24,16 @@
 
 # IMPORT
 
+import os
+import sys
+
 import Tkinter as tk
 import tkFileDialog as tkfd
+import Image
 import ImageTk
 import subprocess
 
-from catamount.common import *
+import catamount.common as catcm
 
 # CLASSES
 
@@ -38,7 +42,7 @@ class MainWindow(object):
 
 	def __init__(self):
 		self.root = tk.Tk()
-		self.root.title('{0} v{1}'.format(APP_NAME, APP_VERSION))
+		self.root.title('{0} v{1}'.format(catcm.APP_NAME, catcm.APP_VERSION))
 		self.root.grid()
 		self.root.columnconfigure(0, weight=1)
 		self.root.rowconfigure(0, weight=1)
@@ -68,14 +72,14 @@ class MainWindow(object):
 
 	def create_variables(self):
 		self.datafile_path = tk.StringVar()
-		self.datafile_path.set(cfg_datafile_path)
+		self.datafile_path.set(catcm.cfg_datafile_path)
 
 		self.datadir_path = os.path.dirname(self.datafile_path.get())
 
-		self.catids = sorted(find_catids(self.datafile_path.get()))
+		self.catids = sorted(catcm.find_catids_early(self.datafile_path.get()))
 
 		self.outdir_path = tk.StringVar()
-		self.outdir_path.set(cfg_outdir_path)
+		self.outdir_path.set(catcm.cfg_outdir_path)
 
 		self.mode = tk.StringVar()
 		self.mode.set('')
@@ -88,22 +92,22 @@ class MainWindow(object):
 		self.cluster_catid.set('')
 
 		self.cluster_radius = tk.StringVar()
-		self.cluster_radius.set('{0} meters'.format(cfg_cluster_radius))
+		self.cluster_radius.set('{0} meters'.format(catcm.cfg_cluster_radius))
 
 		self.cluster_time_cutoff = tk.StringVar()
-		self.cluster_time_cutoff.set('{0} hours'.format(cfg_cluster_time_cutoff))
+		self.cluster_time_cutoff.set('{0} hours'.format(catcm.cfg_cluster_time_cutoff))
 
 		self.cluster_minimum_count = tk.StringVar()
-		self.cluster_minimum_count.set('{0} points'.format(cfg_cluster_minimum_count))
+		self.cluster_minimum_count.set('{0} points'.format(catcm.cfg_cluster_minimum_count))
 
 		self.cluster_minimum_stay = tk.StringVar()
-		self.cluster_minimum_stay.set('{0} hours'.format(cfg_cluster_minimum_stay))
+		self.cluster_minimum_stay.set('{0} hours'.format(catcm.cfg_cluster_minimum_stay))
 
 		self.cluster_start_date = tk.StringVar()
-		self.cluster_start_date.set(cfg_cluster_start_date)
+		self.cluster_start_date.set(catcm.cfg_cluster_start_date)
 
 		self.cluster_end_date = tk.StringVar()
-		self.cluster_end_date.set(cfg_cluster_end_date)
+		self.cluster_end_date.set(catcm.cfg_cluster_end_date)
 
 		self.cluster_clusterid = tk.StringVar()
 		self.cluster_clusterid.set('')
@@ -116,32 +120,32 @@ class MainWindow(object):
 		self.territory_allcats.set('all')
 
 		self.territory_dot_size = tk.StringVar()
-		self.territory_dot_size.set('{0} pixels'.format(cfg_territory_dot_size))
+		self.territory_dot_size.set('{0} pixels'.format(catcm.cfg_territory_dot_size))
 
 		self.territory_perimeter_resolution = tk.StringVar()
-		self.territory_perimeter_resolution.set('{0} degrees'.format(cfg_territory_perimeter_resolution))
+		self.territory_perimeter_resolution.set('{0} degrees'.format(catcm.cfg_territory_perimeter_resolution))
 
 		self.territory_start_date = tk.StringVar()
-		self.territory_start_date.set(cfg_territory_start_date)
+		self.territory_start_date.set(catcm.cfg_territory_start_date)
 
 		self.territory_end_date = tk.StringVar()
-		self.territory_end_date.set(cfg_territory_end_date)
+		self.territory_end_date.set(catcm.cfg_territory_end_date)
 
 		# Crossing Variables
 		self.crossing_allcats = tk.StringVar()
 		self.crossing_allcats.set('all')
 
 		self.crossing_radius = tk.StringVar()
-		self.crossing_radius.set('{0} meters'.format(cfg_crossing_radius))
+		self.crossing_radius.set('{0} meters'.format(catcm.cfg_crossing_radius))
 
 		self.crossing_time_cutoff = tk.StringVar()
-		self.crossing_time_cutoff.set('{0} hours'.format(cfg_crossing_time_cutoff))
+		self.crossing_time_cutoff.set('{0} hours'.format(catcm.cfg_crossing_time_cutoff))
 
 		self.crossing_start_date = tk.StringVar()
-		self.crossing_start_date.set(cfg_crossing_start_date)
+		self.crossing_start_date.set(catcm.cfg_crossing_start_date)
 
 		self.crossing_end_date = tk.StringVar()
-		self.crossing_end_date.set(cfg_crossing_end_date)
+		self.crossing_end_date.set(catcm.cfg_crossing_end_date)
 
 		self.crossing_crossingid = tk.StringVar()
 		self.crossing_crossingid.set('')
@@ -151,10 +155,10 @@ class MainWindow(object):
 
 		# Whodunit Variables
 		self.whodunit_radius = tk.StringVar()
-		self.whodunit_radius.set('{0} meters'.format(cfg_whodunit_radius))
+		self.whodunit_radius.set('{0} meters'.format(catcm.cfg_whodunit_radius))
 
 		self.whodunit_time_cutoff = tk.StringVar()
-		self.whodunit_time_cutoff.set('{0} hours'.format(cfg_whodunit_time_cutoff))
+		self.whodunit_time_cutoff.set('{0} hours'.format(catcm.cfg_whodunit_time_cutoff))
 
 		self.whodunit_date = tk.StringVar()
 		self.whodunit_date.set('')
@@ -170,13 +174,13 @@ class MainWindow(object):
 
 		# Match Survey To Cluster Variables
 		self.matchsurvey_radius = tk.StringVar()
-		self.matchsurvey_radius.set('{0} meters'.format(cfg_matchsurvey_radius))
+		self.matchsurvey_radius.set('{0} meters'.format(catcm.cfg_matchsurvey_radius))
 
 		self.matchsurvey_time_cutoff = tk.StringVar()
-		self.matchsurvey_time_cutoff.set('{0} hours'.format(cfg_matchsurvey_time_cutoff))
+		self.matchsurvey_time_cutoff.set('{0} hours'.format(catcm.cfg_matchsurvey_time_cutoff))
 
 		self.matchsurvey_survey_file_path = tk.StringVar()
-		self.matchsurvey_survey_file_path.set(cfg_matchsurvey_survey_file_path)
+		self.matchsurvey_survey_file_path.set(catcm.cfg_matchsurvey_survey_file_path)
 
 		self.matchsurvey_survey_dir_path = os.path.dirname(self.matchsurvey_survey_file_path.get())
 
@@ -945,7 +949,7 @@ class MainWindow(object):
 			return False
 
 	def refresh_catids(self):
-		self.catids = sorted(find_catids(self.datafile_path.get()))
+		self.catids = sorted(catcm.find_catids_early(self.datafile_path.get()))
 
 		# Empty the lists
 		self.cluster_catid_menu['menu'].delete(0, tk.END)
@@ -1090,10 +1094,10 @@ class MainWindow(object):
 			graphicwindow = GraphicWindow(imagefilepath)
 
 	def launch_find_clusters(self):
-		cluster_start_date = date_string_to_objects(self.cluster_start_date.get())
-		cluster_end_date = date_string_to_objects(self.cluster_end_date.get())
+		cluster_start_date = catcm.date_string_to_objects(self.cluster_start_date.get())
+		cluster_end_date = catcm.date_string_to_objects(self.cluster_end_date.get())
 
-		cluster_args = [sys.executable, os.path.join(basepath, 'find_clusters.py')]
+		cluster_args = [sys.executable, os.path.join(catcm.basepath, 'find_clusters.py')]
 		cluster_args.extend(['--datafile_path', self.datafile_path.get()])
 		cluster_args.extend(['--outdir_path', self.outdir_path.get()])
 		cluster_args.extend(['--catid', self.cluster_catid.get()])
@@ -1114,7 +1118,7 @@ class MainWindow(object):
 			cluster_args.extend(['--clusterid', self.cluster_clusterid.get()])
 
 
-		cluster_filename = create_cluster_filename(
+		cluster_filename = catcm.create_cluster_filename(
 			self.cluster_catid.get(), cluster_start_date, cluster_end_date, self.cluster_clusterid.get()
 		)
 		self.call_script(cluster_args, cluster_filename, 'find_clusters')
@@ -1129,10 +1133,10 @@ class MainWindow(object):
 			for index in catids_indexes:
 				territory_catids.append(self.territory_catids_list.get(index))
 
-		territory_start_date = date_string_to_objects(self.territory_start_date.get())
-		territory_end_date = date_string_to_objects(self.territory_end_date.get())
+		territory_start_date = catcm.date_string_to_objects(self.territory_start_date.get())
+		territory_end_date = catcm.date_string_to_objects(self.territory_end_date.get())
 
-		territory_args = [sys.executable, os.path.join(basepath, 'show_territories.py')]
+		territory_args = [sys.executable, os.path.join(catcm.basepath, 'show_territories.py')]
 		territory_args.extend(['--datafile_path', self.datafile_path.get()])
 		territory_args.extend(['--outdir_path', self.outdir_path.get()])
 
@@ -1148,7 +1152,7 @@ class MainWindow(object):
 		if territory_end_date:
 			territory_args.extend(['--end_date', self.territory_end_date.get()])
 
-		territory_filename = create_territory_filename(
+		territory_filename = catcm.create_territory_filename(
 			territory_start_date, territory_end_date, territory_catids
 		)
 		self.call_script(territory_args, territory_filename, 'show_territories')
@@ -1162,10 +1166,10 @@ class MainWindow(object):
 			for index in catids_indexes:
 				crossing_catids.append(self.crossing_catids_list.get(index))
 
-		crossing_start_date = date_string_to_objects(self.crossing_start_date.get())
-		crossing_end_date = date_string_to_objects(self.crossing_end_date.get())
+		crossing_start_date = catcm.date_string_to_objects(self.crossing_start_date.get())
+		crossing_end_date = catcm.date_string_to_objects(self.crossing_end_date.get())
 
-		crossing_args = [sys.executable, os.path.join(basepath, 'find_crossings.py')]
+		crossing_args = [sys.executable, os.path.join(catcm.basepath, 'find_crossings.py')]
 		crossing_args.extend(['--datafile_path', self.datafile_path.get()])
 		crossing_args.extend(['--outdir_path', self.outdir_path.get()])
 
@@ -1186,15 +1190,15 @@ class MainWindow(object):
 		if self.crossing_crossingid.get():
 			crossing_args.extend(['--crossingid', self.crossing_crossingid.get()])
 
-		crossing_filename = create_crossing_filename(
+		crossing_filename = catcm.create_crossing_filename(
 			crossing_start_date, crossing_end_date, crossing_catids, self.crossing_crossingid.get()
 		)
 		self.call_script(crossing_args, crossing_filename, 'find_crossings')
 
 	def launch_find_whodunit(self):
-		whodunit_date = date_string_to_objects(self.whodunit_date.get())
+		whodunit_date = catcm.date_string_to_objects(self.whodunit_date.get())
 
-		whodunit_args = [sys.executable, os.path.join(basepath, 'find_whodunit.py')]
+		whodunit_args = [sys.executable, os.path.join(catcm.basepath, 'find_whodunit.py')]
 		whodunit_args.extend(['--datafile_path', self.datafile_path.get()])
 		whodunit_args.extend(['--outdir_path', self.outdir_path.get()])
 		whodunit_args.extend(['--radius', self.remove_units(self.whodunit_radius.get())])
@@ -1204,14 +1208,14 @@ class MainWindow(object):
 		whodunit_args.extend(['--y_coordinate', self.whodunit_y.get()])
 		whodunit_args.extend(['--text_style', self.whodunit_text_style.get()])
 
-		whodunit_filename = create_whodunit_filename(
+		whodunit_filename = catcm.create_whodunit_filename(
 			whodunit_date, self.whodunit_x.get(), self.whodunit_y.get()
 		)
 		self.call_script(whodunit_args, whodunit_filename, 'find_whodunit')
 
 
 	def launch_match_survey_to_cluster(self):
-		matchsurvey_args = [sys.executable, os.path.join(basepath, 'match_survey_to_cluster.py')]
+		matchsurvey_args = [sys.executable, os.path.join(catcm.basepath, 'match_survey_to_cluster.py')]
 		matchsurvey_args.extend(['--datafile_path', self.datafile_path.get()])
 		matchsurvey_args.extend(['--survey_file_path', self.matchsurvey_survey_file_path.get()])
 		matchsurvey_args.extend(['--radius', self.remove_units(self.matchsurvey_radius.get())])
@@ -1227,7 +1231,7 @@ class MainWindow(object):
 		self.aboutframe = tk.Frame(self.aboutwindow)
 		self.aboutframe.grid(row=0, column=0, padx=8, pady=8)
 
-		abouttext = '{0}\nVersion {1}\n\n{2}'.format(APP_NAME, APP_VERSION, APP_COPYRIGHT)
+		abouttext = '{0}\nVersion {1}\n\n{2}'.format(catcm.APP_NAME, catcm.APP_VERSION, catcm.APP_COPYRIGHT)
 
 		self.aboutlabel = tk.Label(self.aboutframe, text=abouttext)
 		self.aboutclose = tk.Button(self.aboutframe, text='Close', command=self.aboutwindow.destroy)

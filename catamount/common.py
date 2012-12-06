@@ -1,4 +1,4 @@
-#! /usr/bin/env python
+#!/usr/bin/env python
 
 # CatAmount analyzes GPS collar data to find time/space relationships.
 # Copyright (C) 2012 Michael Rickard
@@ -28,12 +28,11 @@ import os
 import re
 import sys
 import math
-import argparse
+import time
 
-from csv import reader as csvreader
-from time import mktime
 from dateutil import parser as dateparser
 from ConfigParser import RawConfigParser
+from csv import reader as csvreader
 
 import Image
 import ImageDraw
@@ -544,7 +543,7 @@ class Fix(object):
 		self.id = self.csvrow[0]
 		self.catid = self.csvrow[1]
 		self.dateobj = dateparser.parse(self.csvrow[4])
-		self.time = mktime(self.dateobj.timetuple())
+		self.time = time.mktime(self.dateobj.timetuple())
 		self.x = float(self.csvrow[7])
 		self.y = float(self.csvrow[6])
 
@@ -921,7 +920,7 @@ class DataPool(GraphicBase):
 
 # FUNCTIONS
 
-def find_catids(datafile_path):
+def find_catids_early(datafile_path):
 	"""Scan the CSV file to learn what cat IDs it contains."""
 
 	catid_regex = '^(M|F)[\d]+$'
@@ -1009,7 +1008,7 @@ def date_string_to_objects(date_str):
 		return False
 
 	dateobj = dateparser.parse(date_str)
-	return (dateobj, mktime(dateobj.timetuple()))
+	return (dateobj, time.mktime(dateobj.timetuple()))
 
 def hours_arg_to_seconds(hours_arg):
 	"""Convert hour string argument from command line into seconds as an integer."""

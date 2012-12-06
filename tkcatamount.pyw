@@ -24,9 +24,9 @@
 
 # IMPORT
 
-from catamount.tkcatamount import *
+import catamount.tkcatamount as cattk
 
 
 # BEGIN SCRIPT
 
-tkcatamount = MainWindow()
+tkcatamount = cattk.MainWindow()

@@ -1,4 +1,4 @@
-#! /usr/bin/env python
+#!/usr/bin/env python
 
 # CatAmount analyzes GPS collar data to find time/space relationships.
 # Copyright (C) 2012 Michael Rickard
@@ -24,18 +24,23 @@
 
 # IMPORT
 
-from catamount.common import *
+import sys
+
+import Image
+import ImageDraw
+
+import catamount.common as catcm
 
 
 # CLASSES
 
-class FCTrail(Trail):
+class FCTrail(catcm.Trail):
 	"""An extension of a plain Trail, adding things that are useful for finding clusters.
 
 	It adds the ability to find clusters, do calculations, and display clusters."""
 
 	def __init__(self, catid, radius, time_cutoff, minimum_count, minimum_stay):
-		Trail.__init__(self, catid)
+		catcm.Trail.__init__(self, catid)
 
 		self.radius = radius
 		self.time_cutoff = time_cutoff
@@ -78,7 +83,7 @@ class FCTrail(Trail):
 					if fix.distance_from(current_item) <= self.radius:
 
 						# Create a new cluster if necessary
-						if isinstance(current_item, Fix):
+						if isinstance(current_item, catcm.Fix):
 							first_fix = current_item
 							first_fix.status = 'home'
 							current_item = FCCluster(first_fix, self.radius, self.time_cutoff, self.minimum_count, self.minimum_stay, self.legend_start_date, self.legend_end_date)
@@ -112,7 +117,7 @@ class FCTrail(Trail):
 			# All attempts to create a cluster around the current_item have now finished
 
 			# If we made a cluster, commit it to the list
-			if isinstance(current_item, Cluster):
+			if isinstance(current_item, catcm.Cluster):
 				self.clusters.append(current_item)
 				current_item = False
 			# If we did not make a cluster, current_item must be a fix that didn't match anything
@@ -120,7 +125,7 @@ class FCTrail(Trail):
 				pass
 
 		# When we run out of fixes to examine, we may still have a cluster that needs to be committed
-		if isinstance(current_item, Cluster):
+		if isinstance(current_item, catcm.Cluster):
 			self.clusters.append(current_item)
 
 
@@ -216,23 +221,23 @@ class FCTrail(Trail):
 			radius = self.radius / self.scale
 			self.fgdraw.ellipse(
 				[(img_x - radius, img_y - radius), (img_x + radius, img_y + radius)],
-				image_colors['cluster'],
-				image_colors['cluster']
+				catcm.image_colors['cluster'],
+				catcm.image_colors['cluster']
 			)
 
 		# Create a scatter plot of all fixes
 		for fix in self.fixes:
 			img_x = self.img_x(fix.x)
 			img_y = self.img_y(fix.y)
-			self.fgdraw.point((img_x, img_y), image_colors['fg'])
+			self.fgdraw.point((img_x, img_y), catcm.image_colors['fg'])
 
 
-class FCCluster(Cluster):
+class FCCluster(catcm.Cluster):
 	"""An extension of a plain Cluster, adding things that are useful for display.
 	It adds the ability to plot clusters, and output text reports."""
 
 	def __init__(self, first_fix, radius, time_cutoff, minimum_count, minimum_stay, legend_start_date, legend_end_date):
-		Cluster.__init__(self, first_fix)
+		catcm.Cluster.__init__(self, first_fix)
 
 		self.radius = radius
 		self.time_cutoff = time_cutoff
@@ -247,8 +252,8 @@ class FCCluster(Cluster):
 
 		field_list = [
 			self.id,
-			self.start_dateobj.strftime(DATE_FMT_ISO),
-			self.end_dateobj.strftime(DATE_FMT_ISO),
+			self.start_dateobj.strftime(catcm.DATE_FMT_ISO),
+			self.end_dateobj.strftime(catcm.DATE_FMT_ISO),
 			'{:0.2f}'.format(self.elapsed_time / 3600),
 			'{:0.1f}'.format(self.x),
 			'{:0.1f}'.format(self.y),
@@ -271,7 +276,7 @@ class FCCluster(Cluster):
 		"""Create a descriptive stanza for this cluster."""
 
 		output = 'Cluster {}\n'.format(self.id)
-		output += '  Dates: From {} to {} (utc)\n'.format(self.start_dateobj.strftime(DATE_FMT_ISO), self.end_dateobj.strftime(DATE_FMT_ISO))
+		output += '  Dates: From {} to {} (utc)\n'.format(self.start_dateobj.strftime(catcm.DATE_FMT_ISO), self.end_dateobj.strftime(catcm.DATE_FMT_ISO))
 		output += '  Elapsed Time: {:0.2f} hours\n'.format(self.elapsed_time / 3600)
 		output += '  Center Location: {:0.2f} east, {:0.2f} north (NAD27)\n'.format(self.x, self.y)
 		output += '  Points: {} in cluster, {} away from cluster, {} total\n'.format(len(self.home_fixes), len(self.away_fixes), len(self.all_fixes))
@@ -307,8 +312,8 @@ class FCCluster(Cluster):
 
 		column_2 = list()
 		column_2.append(('Cluster ID', self.id))
-		column_2.append(('Start Date', self.start_dateobj.strftime(DATE_FMT_ISO_SHORT)))
-		column_2.append(('End Date', self.end_dateobj.strftime(DATE_FMT_ISO_SHORT)))
+		column_2.append(('Start Date', self.start_dateobj.strftime(catcm.DATE_FMT_ISO_SHORT)))
+		column_2.append(('End Date', self.end_dateobj.strftime(catcm.DATE_FMT_ISO_SHORT)))
 		column_2.append(('Center X', '{0:0.1f}'.format(self.x)))
 		column_2.append(('Center Y', '{0:0.1f}'.format(self.y)))
 		column_2.append(('Fidelity', '{0}/{1}, {2:0.2f}%'.format(len(self.home_fixes), len(self.all_fixes), self.fidelity)))
@@ -323,7 +328,7 @@ class FCCluster(Cluster):
 
 		# Draw a circle representing the design radius of the cluster
 		radius = self.radius / self.scale
-		circleimg = Image.new('RGB', (radius * 2, radius * 2), image_colors['cluster'])
+		circleimg = Image.new('RGB', (radius * 2, radius * 2), catcm.image_colors['cluster'])
 		circlemask = Image.new('L', (radius * 2, radius * 2), '#000000')
 		circlemaskdraw = ImageDraw.Draw(circlemask)
 		circlemaskdraw.ellipse([(0, 0), ((radius * 2) - 1, (radius * 2) - 1)], '#000000', '#FFFFFF')
@@ -335,17 +340,17 @@ class FCCluster(Cluster):
 			pt_img_x = self.img_x(fix.x)
 			pt_img_y = self.img_y(fix.y)
 			fix_line_coords.append((pt_img_x, pt_img_y))
-		self.fgdraw.line(fix_line_coords, image_colors['trail'])
+		self.fgdraw.line(fix_line_coords, catcm.image_colors['trail'])
 
 		# Draw a cross at the center of the cluster
-		self.fgdraw.line([(img_x - 2, img_y), (img_x + 2, img_y)], image_colors['cluster'])
-		self.fgdraw.line([(img_x, img_y - 2), (img_x, img_y + 2)], image_colors['cluster'])
+		self.fgdraw.line([(img_x - 2, img_y), (img_x + 2, img_y)], catcm.image_colors['cluster'])
+		self.fgdraw.line([(img_x, img_y - 2), (img_x, img_y + 2)], catcm.image_colors['cluster'])
 
 		# Create a scatter plot of all fixes
 		for fix in self.all_fixes:
 			pt_img_x = self.img_x(fix.x)
 			pt_img_y = self.img_y(fix.y)
-			self.fgdraw.point((pt_img_x, pt_img_y), image_colors['fg'])
+			self.fgdraw.point((pt_img_x, pt_img_y), catcm.image_colors['fg'])
 
 
 

@@ -1,4 +1,4 @@
-#! /usr/bin/env python
+#!/usr/bin/env python
 
 # CatAmount analyzes GPS collar data to find time/space relationships.
 # Copyright (C) 2012 Michael Rickard
@@ -24,19 +24,24 @@
 
 # IMPORT
 
-from catamount.common import *
+import math
+
+import Image
+import ImageDraw
+
+import catamount.common as catcm
 
 
 # CLASSES
 
-class STDataPool(DataPool):
+class STDataPool(catcm.DataPool):
 	"""Extension of a DataPool, to add things specific to show_territories.
 
 	This adds the ability to divide the data into trails, and display
 	territory graphics."""
 
 	def __init__(self, dot_size, perimeter_resolution):
-		DataPool.__init__(self)
+		catcm.DataPool.__init__(self)
 
 		self.dot_size = dot_size
 		self.perimeter_resolution = perimeter_resolution
@@ -51,7 +56,7 @@ class STDataPool(DataPool):
 
 		for fix in self.fixes:
 			if fix.catid not in self.trails:
-				new_trail = Trail(fix.catid)
+				new_trail = catcm.Trail(fix.catid)
 				self.trails[fix.catid] = new_trail
 
 			self.trails[fix.catid].fixes.append(fix)

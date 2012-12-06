@@ -1,4 +1,4 @@
-#! /usr/bin/env python
+#!/usr/bin/env python
 
 # CatAmount analyzes GPS collar data to find time/space relationships.
 # Copyright (C) 2012 Michael Rickard
@@ -24,11 +24,15 @@
 
 # IMPORT
 
+import sys
 import pytz
+import time
 import datetime
 
-from catamount.common import *
-from catamount.find_clusters import FCTrail, FCCluster
+from dateutil import parser as dateparser
+
+import catamount.common as catcm
+import catamount.find_clusters as catfc
 
 
 # GLOBALS
@@ -45,13 +49,13 @@ maximum_location = {'x': 650000, 'y': 6000000}
 
 # CLASSES
 
-class MSDataPool(DataPool):
+class MSDataPool(catcm.DataPool):
 	"""Extension of a plain DataPool, adding things useful for matching field surveys.
 
 	It adds sorting of all fixes into trails, and making a list of all clusters."""
 
 	def __init__(self, radius, time_cutoff):
-		DataPool.__init__(self)
+		catcm.DataPool.__init__(self)
 
 		self.radius = radius
 		self.time_cutoff = time_cutoff
@@ -69,7 +73,7 @@ class MSDataPool(DataPool):
 
 		# Create a trail for each cat; using FCTrail because it has the clustering method (for now)
 		for catid in self.catids:
-			new_trail = FCTrail(catid, self.radius, self.time_cutoff, self.minimum_count, self.minimum_stay)
+			new_trail = catfc.FCTrail(catid, self.radius, self.time_cutoff, self.minimum_count, self.minimum_stay)
 
 			self.trails[catid] = new_trail
 
@@ -177,7 +181,7 @@ class Survey(object):
 			except KeyError:
 				sys.stderr.write('Internal header list does not match headers of data file.\n')
 				sys.stderr.write('Could not find a data column called "{}".\n'.format(header))
-				sys.stderr.write('Please edit the internal header lists: "match_survey_to_cluster.py".\n'.format(basepath))
+				sys.stderr.write('Please edit the internal header lists: "{}/match_survey_to_cluster.py".\n'.format(catcm.basepath))
 				sys.stderr.write('Or, correct the headers in the data file.\n\n')
 				all_headers_okay = False
 
@@ -206,9 +210,9 @@ class Survey(object):
 			dateobj = mountain_time.localize(dateobj)
 
 			# Convert to seconds
-			time = mktime(dateobj.timetuple())
+			seconds = time.mktime(dateobj.timetuple())
 
-			time_list.append(time)
+			time_list.append(seconds)
 
 		# Do not compute averages if there are no values
 		if not time_list:
@@ -263,7 +267,7 @@ class Survey(object):
 	def delay_from(self, other):
 		"""Find the time difference between this survey and another object, usually a cluster."""
 
-		if isinstance(other, Cluster):
+		if isinstance(other, catcm.Cluster):
 			if self.time < other.start_time:
 				delay = other.start_time - self.time
 			elif self.time > other.end_time:
@@ -282,7 +286,7 @@ class Survey(object):
 			self.attributes['ID'],
 			'{:0.1f}'.format(self.x),
 			'{:0.1f}'.format(self.y),
-			self.dateobj.strftime(DATE_FMT_ISO)
+			self.dateobj.strftime(catcm.DATE_FMT_ISO)
 		]
 
 		if self.major_problems:

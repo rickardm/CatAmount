@@ -1,4 +1,4 @@
-#! /usr/bin/env python
+#!/usr/bin/env python
 
 # CatAmount analyzes GPS collar data to find time/space relationships.
 # Copyright (C) 2012 Michael Rickard
@@ -24,8 +24,15 @@
 
 # IMPORT
 
-from catamount.find_crossings import *
-from catamount.sun_metrics import *
+import os
+import sys
+import argparse
+
+from csv import reader as csvreader
+
+import catamount.common as catcm
+import catamount.find_crossings as catfx
+import catamount.sun_metrics as catsm
 
 
 # BEGIN SCRIPT
@@ -38,49 +45,49 @@ argman = argparse.ArgumentParser(
 argman.add_argument(
 	'-f', '--datafile_path',
 	dest='datafile_path', action='store',
-	type=check_file_arg, default=cfg_datafile_path,
+	type=catcm.check_file_arg, default=catcm.cfg_datafile_path,
 	help='Interpret this data file.'
 )
 
 argman.add_argument(
 	'-o', '--outdir_path',
 	dest='outdir_path', action='store',
-	type=check_dir_arg, default=cfg_outdir_path,
+	type=catcm.check_dir_arg, default=catcm.cfg_outdir_path,
 	help='Specify an output directory.'
 )
 
 argman.add_argument(
 	'-c', '--catids',
 	dest='catids', action='store',
-	type=comma_string_to_list, default=False,
+	type=catcm.comma_string_to_list, default=False,
 	help='Limit crossings to those involving these cats. Separate cat ids with commas.'
 )
 
 argman.add_argument(
 	'-r', '--radius',
 	dest='radius', action='store',
-	type=int, default=cfg_crossing_radius,
+	type=int, default=catcm.cfg_crossing_radius,
 	help='Design radius of a crossing.'
 )
 
 argman.add_argument(
 	'-t', '--time_cutoff',
 	dest='time_cutoff', action='store',
-	type=hours_arg_to_seconds, default=cfg_crossing_time_cutoff,
+	type=catcm.hours_arg_to_seconds, default=catcm.cfg_crossing_time_cutoff,
 	help='Design time cutoff of a crossing in hours.'
 )
 
 argman.add_argument(
 	'-d1', '--start_date',
 	dest='start_date', action='store',
-	type=date_string_to_objects, default=cfg_crossing_start_date,
+	type=catcm.date_string_to_objects, default=catcm.cfg_crossing_start_date,
 	help='Limit crossings to ones that start after this date. YYYY-MM-DD.'
 )
 
 argman.add_argument(
 	'-d2', '--end_date',
 	dest='end_date', action='store',
-	type=date_string_to_objects, default=cfg_crossing_end_date,
+	type=catcm.date_string_to_objects, default=catcm.cfg_crossing_end_date,
 	help='Limit crossings to ones that start before this date. YYYY-MM-DD.'
 )
 
@@ -106,11 +113,11 @@ argman.add_argument(
 args = argman.parse_args()
 
 # Make sure integer arguments are in a reasonable range.
-args.radius = constrain_integer(args.radius, 0, 1000)
-args.time_cutoff = constrain_integer(args.time_cutoff, 0, 31536000)
+args.radius = catcm.constrain_integer(args.radius, 0, 1000)
+args.time_cutoff = catcm.constrain_integer(args.time_cutoff, 0, 31536000)
 
 # Create a SunMetrics object so any fixes can compute day and night
-sun_metrics = SunMetrics()
+sun_metrics = catsm.SunMetrics()
 
 # Open and process the data file
 with open(args.datafile_path, 'rb') as datafile:
@@ -125,12 +132,12 @@ with open(args.datafile_path, 'rb') as datafile:
 		sys.exit('No CSV data was found after checking cat ids. Cat ids were {0}'.format(','.join(args.catids)))
 
 	# Create a new DataPool object to work with
-	datapool = FXDataPool(args.radius, args.time_cutoff)
+	datapool = catfx.FXDataPool(args.radius, args.time_cutoff)
 
 	# For every row, create a Fix object and add it to the DataPool
 	for csvrow in csvrows:
 		try:
-			new_fix = Fix(csvrow, sun_metrics)
+			new_fix = catcm.Fix(csvrow, sun_metrics)
 		except ValueError:
 			sys.stderr.write('CSV row doesn\'t look like data: {0}\n'.format(csvrow))
 			continue
@@ -182,15 +189,15 @@ datapool.find_catids()
 datapool.find_cat_colors()
 
 # Get image name and path ready
-imagename = create_crossing_filename(args.start_date, args.end_date, args.catids, args.crossingid)
+imagename = catcm.create_crossing_filename(args.start_date, args.end_date, args.catids, args.crossingid)
 imagepath = os.path.join(args.outdir_path, imagename + '.png')
 
 # Prepare date limiting strings for use in image legends
 if args.start_date:
-	datapool.legend_start_date = args.start_date[0].strftime(DATE_FMT_ISO_SHORT)
+	datapool.legend_start_date = args.start_date[0].strftime(catcm.DATE_FMT_ISO_SHORT)
 
 if args.end_date:
-	datapool.legend_end_date = args.end_date[0].strftime(DATE_FMT_ISO_SHORT)
+	datapool.legend_end_date = args.end_date[0].strftime(catcm.DATE_FMT_ISO_SHORT)
 
 # If we're zooming in on a certain crossing, do so now
 if args.crossingid:

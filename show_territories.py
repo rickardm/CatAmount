@@ -1,4 +1,4 @@
-#! /usr/bin/env python
+#!/usr/bin/env python
 
 # CatAmount analyzes GPS collar data to find time/space relationships.
 # Copyright (C) 2012 Michael Rickard
@@ -24,7 +24,14 @@
 
 # IMPORT
 
-from catamount.show_territories import *
+import os
+import sys
+import argparse
+
+from csv import reader as csvreader
+
+import catamount.common as catcm
+import catamount.show_territories as catst
 
 
 # BEGIN SCRIPT
@@ -37,49 +44,49 @@ argman = argparse.ArgumentParser(
 argman.add_argument(
 	'-f', '--datafile_path',
 	dest='datafile_path', action='store',
-	type=check_file_arg, default=cfg_datafile_path,
+	type=catcm.check_file_arg, default=catcm.cfg_datafile_path,
 	help='Interpret this data file.'
 )
 
 argman.add_argument(
 	'-o', '--outdir_path',
 	dest='outdir_path', action='store',
-	type=check_dir_arg, default=cfg_outdir_path,
+	type=catcm.check_dir_arg, default=catcm.cfg_outdir_path,
 	help='Specify an output directory.'
 )
 
 argman.add_argument(
 	'-c', '--catids',
 	dest='catids', action='store',
-	type=comma_string_to_list, default=False,
+	type=catcm.comma_string_to_list, default=False,
 	help='Limit territories shown to these cats. Separate cat ids with commas.'
 )
 
 argman.add_argument(
 	'-s', '--dot_size',
 	dest='dot_size', action='store',
-	type=int, default=cfg_territory_dot_size,
+	type=int, default=catcm.cfg_territory_dot_size,
 	help='Size of graphic dot in pixels.'
 )
 
 argman.add_argument(
 	'-r', '--perimeter_resolution',
 	dest='perimeter_resolution', action='store',
-	type=int, default=cfg_territory_perimeter_resolution,
+	type=int, default=catcm.cfg_territory_perimeter_resolution,
 	help='Resolution of perimeter in degrees.'
 )
 
 argman.add_argument(
 	'-d1', '--start_date',
 	dest='start_date', action='store',
-	type=date_string_to_objects, default=cfg_territory_start_date,
+	type=catcm.date_string_to_objects, default=catcm.cfg_territory_start_date,
 	help='Limit points shown to after this date. YYYY-MM-DD.'
 )
 
 argman.add_argument(
 	'-d2', '--end_date',
 	dest='end_date', action='store',
-	type=date_string_to_objects, default=cfg_territory_end_date,
+	type=catcm.date_string_to_objects, default=catcm.cfg_territory_end_date,
 	help='Limit points shown to before this date. YYYY-MM-DD.'
 )
 
@@ -91,8 +98,8 @@ argman.add_argument(
 args = argman.parse_args()
 
 # Make sure integer arguments are in a reasonable range.
-args.dot_size = constrain_integer(args.dot_size, 2, 100)
-args.perimeter_resolution = constrain_integer(args.perimeter_resolution, 1, 120)
+args.dot_size = catcm.constrain_integer(args.dot_size, 2, 100)
+args.perimeter_resolution = catcm.constrain_integer(args.perimeter_resolution, 1, 120)
 
 # Open and process the data file
 with open(args.datafile_path, 'rb') as datafile:
@@ -107,12 +114,12 @@ with open(args.datafile_path, 'rb') as datafile:
 		sys.exit('No CSV data was found after checking cat ids. Cat ids were {0}.'.format(','.join(args.catids)))
 
 	# Create a new DataPool object to work with
-	datapool = STDataPool(args.dot_size, args.perimeter_resolution)
+	datapool = catst.STDataPool(args.dot_size, args.perimeter_resolution)
 
 	# For every row, create a Fix object and add it to the DataPool
 	for csvrow in csvrows:
 		try:
-			new_fix = Fix(csvrow)
+			new_fix = catcm.Fix(csvrow)
 		except ValueError:
 			sys.stderr.write('CSV row doesn\'t look like data: {0}\n'.format(csvrow))
 			continue
@@ -154,15 +161,15 @@ datapool.find_catids()
 datapool.find_cat_colors()
 
 # Create an image
-imagename = create_territory_filename(args.start_date, args.end_date, args.catids)
+imagename = catcm.create_territory_filename(args.start_date, args.end_date, args.catids)
 imagepath = os.path.join(args.outdir_path, imagename + '.png')
 
 # Prepare date limiting strings for use in image legends
 if args.start_date:
-	datapool.legend_start_date = args.start_date[0].strftime(DATE_FMT_ISO_SHORT)
+	datapool.legend_start_date = args.start_date[0].strftime(catcm.DATE_FMT_ISO_SHORT)
 
 if args.end_date:
-	datapool.legend_end_date = args.end_date[0].strftime(DATE_FMT_ISO_SHORT)
+	datapool.legend_end_date = args.end_date[0].strftime(catcm.DATE_FMT_ISO_SHORT)
 
 # Create a feedback image
 datapool.create_image(imagepath, 'auto')

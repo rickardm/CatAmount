@@ -1,4 +1,4 @@
-#! /usr/bin/env python
+#!/usr/bin/env python
 
 # CatAmount analyzes GPS collar data to find time/space relationships.
 # Copyright (C) 2012 Michael Rickard
@@ -24,7 +24,12 @@
 
 # IMPORT
 
-from catamount.common import *
+import sys
+
+import Image
+import ImageDraw
+
+import catamount.common as catcm
 
 
 # CONSTANTS/GLOBALS
@@ -34,13 +39,13 @@ crossing_dot_size = 4
 
 # CLASSES
 
-class FXDataPool(DataPool):
+class FXDataPool(catcm.DataPool):
 	"""An extension to a plain DataPool to add things for finding crossings.
 
 	This adds the ability to find crossings and display them."""
 
 	def __init__(self, radius, time_cutoff):
-		DataPool.__init__(self)
+		catcm.DataPool.__init__(self)
 
 		self.radius = radius
 		self.time_cutoff = time_cutoff
@@ -87,10 +92,10 @@ class FXDataPool(DataPool):
 					if fix.distance_from(current_item) <= self.radius:
 
 						# Create a new cluster if necessary
-						if isinstance(current_item, Fix):
+						if isinstance(current_item, catcm.Fix):
 							first_fix = current_item
 							first_fix.status = 'home'
-							current_item = Cluster(first_fix)
+							current_item = catcm.Cluster(first_fix)
 							cats_involved[first_fix.catid] = 1
 
 						if not fix.catid in cats_involved:
@@ -124,7 +129,7 @@ class FXDataPool(DataPool):
 			# All attempts to create a cluster aroud the current fix have finished
 
 			# If we made a cluster, time to commit it to the list
-			if isinstance(current_item, Cluster):
+			if isinstance(current_item, catcm.Cluster):
 				self.clusters.append(current_item)
 				current_item = False
 				cats_involved = dict()
@@ -134,7 +139,7 @@ class FXDataPool(DataPool):
 
 		# When all fixes have been examined, we may still have a
 		# cluster that needs to be committed
-		if isinstance(current_item, Cluster):
+		if isinstance(current_item, catcm.Cluster):
 			self.clusters.append(current_item)
 
 	def clusters_to_crossings(self):
@@ -157,7 +162,7 @@ class FXDataPool(DataPool):
 
 			# Do the following if the cluster involves more than one cat
 			catids = sorted(catids)
-			crossingid = '{0}-{1}'.format(cluster.home_fixes[0].dateobj.strftime(DATE_FMT_ID), '_'.join(catids))
+			crossingid = '{0}-{1}'.format(cluster.home_fixes[0].dateobj.strftime(catcm.DATE_FMT_ID), '_'.join(catids))
 			self.crossings.append(
 				Crossing(crossingid, cluster.home_fixes, cluster.away_fixes, cluster.all_fixes, catids, self.radius, self.time_cutoff, self.legend_start_date, self.legend_end_date)
 			)
@@ -263,7 +268,7 @@ class FXDataPool(DataPool):
 		self.draw_legend(True)
 
 		# Draw a faintly colored dot for every away point
-		awayimg = Image.new('RGB', (self.imgwidth, self.imgheight), image_colors['bg'])
+		awayimg = Image.new('RGB', (self.imgwidth, self.imgheight), catcm.image_colors['bg'])
 		awayimgdraw = ImageDraw.Draw(awayimg)
 		awaymask = Image.new('L', (self.imgwidth, self.imgheight), '#000000')
 		awaymaskdraw = ImageDraw.Draw(awaymask)
@@ -301,11 +306,11 @@ class FXDataPool(DataPool):
 			for fix in crossing.all_fixes:
 				img_x = self.img_x(fix.x)
 				img_y = self.img_y(fix.y)
-				self.fgdraw.point((img_x, img_y), image_colors['fg'])
+				self.fgdraw.point((img_x, img_y), catcm.image_colors['fg'])
 
 
 
-class Crossing(Cluster):
+class Crossing(catcm.Cluster):
 	"""A Crossing is a time when two or more cats share the same time and space.
 
 	A Crossing is like a meeting of two or more cats. It is also like
@@ -337,7 +342,7 @@ class Crossing(Cluster):
 			if catid in self.cat_colors:
 				continue
 
-			self.cat_colors[catid] = catid_to_color(catid)
+			self.cat_colors[catid] = catcm.catid_to_color(catid)
 
 	def find_closest_meeting(self):
 		"""Find which of the points in the crossing constitute the closest meeting.
@@ -377,8 +382,8 @@ class Crossing(Cluster):
 
 		field_list = [
 			self.id,
-			self.start_dateobj.strftime(DATE_FMT_ISO),
-			self.end_dateobj.strftime(DATE_FMT_ISO),
+			self.start_dateobj.strftime(catcm.DATE_FMT_ISO),
+			self.end_dateobj.strftime(catcm.DATE_FMT_ISO),
 			'{:0.2f}'.format(self.elapsed_time / 3600),
 			'{:0.1f}'.format(self.x),
 			'{:0.1f}'.format(self.y),
@@ -409,7 +414,7 @@ class Crossing(Cluster):
 
 		output = 'Crossing {0}\n'.format(self.id)
 		output += '  Cats: {0}\n'.format(', '.join(self.catids))
-		output += '  Dates: From {0} to {1} (utc)\n'.format(self.start_dateobj.strftime(DATE_FMT_ISO), self.end_dateobj.strftime(DATE_FMT_ISO))
+		output += '  Dates: From {0} to {1} (utc)\n'.format(self.start_dateobj.strftime(catcm.DATE_FMT_ISO), self.end_dateobj.strftime(catcm.DATE_FMT_ISO))
 		output += '  Elapsed Time: {0:0.2f} hours\n'.format(self.elapsed_time / 3600)
 		output += '  Center Location: {0:0.2f} east, {1:0.2f} north (NAD27)\n'.format(self.x, self.y)
 		output += '  Closest Meetings:\n'
@@ -418,8 +423,8 @@ class Crossing(Cluster):
 			first = closest_meeting[0]
 			second = closest_meeting[1]
 			output += '    {0:0.2f} hours, {1:0.2f} meters:\n'.format(first.delay_from(second) / 3600, first.distance_from(second))
-			output += '      {0}, {1:0.02f} east, {2:0.02f} north, {3} utc\n'.format(first.catid, first.x, first.y, first.dateobj.strftime(DATE_FMT_ISO))
-			output += '      {0}, {1:0.02f} east, {2:0.02f} north, {3} utc\n'.format(second.catid, second.x, second.y, second.dateobj.strftime(DATE_FMT_ISO))
+			output += '      {0}, {1:0.02f} east, {2:0.02f} north, {3} utc\n'.format(first.catid, first.x, first.y, first.dateobj.strftime(catcm.DATE_FMT_ISO))
+			output += '      {0}, {1:0.02f} east, {2:0.02f} north, {3} utc\n'.format(second.catid, second.x, second.y, second.dateobj.strftime(catcm.DATE_FMT_ISO))
 
 		sys.stdout.write(output)
 	
@@ -442,8 +447,8 @@ class Crossing(Cluster):
 
 		column_2 = list()
 		column_2.append(('Crossing ID', self.id))
-		column_2.append(('Start Date', self.start_dateobj.strftime(DATE_FMT_ISO_SHORT)))
-		column_2.append(('End Date', self.end_dateobj.strftime(DATE_FMT_ISO_SHORT)))
+		column_2.append(('Start Date', self.start_dateobj.strftime(catcm.DATE_FMT_ISO_SHORT)))
+		column_2.append(('End Date', self.end_dateobj.strftime(catcm.DATE_FMT_ISO_SHORT)))
 		column_2.append(('Center X', '{0:0.1f}'.format(self.x)))
 		column_2.append(('Center Y', '{0:0.1f}'.format(self.y)))
 
@@ -463,18 +468,18 @@ class Crossing(Cluster):
 
 		# Draw a circle representing the design radius of the crossing
 		radius = self.radius / self.scale
-		circleimg = Image.new('RGB', (radius * 2, radius * 2), image_colors['crossing'])
+		circleimg = Image.new('RGB', (radius * 2, radius * 2), catcm.image_colors['crossing'])
 		circlemask = Image.new('L', (radius * 2, radius * 2), '#000000')
 		circlemaskdraw = ImageDraw.Draw(circlemask)
 		circlemaskdraw.ellipse([(0, 0), ((radius * 2) - 1, (radius * 2) - 1)], '#000000', '#FFFFFF')
 		self.fgimage.paste(circleimg, (img_x - radius, img_y - radius), circlemask)
 
 		# Draw a cross at the center of the crossing
-		self.fgdraw.line([(img_x - 2, img_y), (img_x + 2, img_y)], image_colors['crossing'])
-		self.fgdraw.line([(img_x, img_y - 2), (img_x, img_y + 2)], image_colors['crossing'])
+		self.fgdraw.line([(img_x - 2, img_y), (img_x + 2, img_y)], catcm.image_colors['crossing'])
+		self.fgdraw.line([(img_x, img_y - 2), (img_x, img_y + 2)], catcm.image_colors['crossing'])
 
 		# Draw a faintly colored dot for every away point
-		awayimg = Image.new('RGB', (self.imgwidth, self.imgheight), image_colors['bg'])
+		awayimg = Image.new('RGB', (self.imgwidth, self.imgheight), catcm.image_colors['bg'])
 		awayimgdraw = ImageDraw.Draw(awayimg)
 		awaymask = Image.new('L', (self.imgwidth, self.imgheight), '#000000')
 		awaymaskdraw = ImageDraw.Draw(awaymask)
@@ -509,6 +514,6 @@ class Crossing(Cluster):
 		for fix in self.all_fixes:
 			img_x = self.img_x(fix.x)
 			img_y = self.img_y(fix.y)
-			self.fgdraw.point((img_x, img_y), image_colors['fg'])
+			self.fgdraw.point((img_x, img_y), catcm.image_colors['fg'])
 
 

@@ -1,4 +1,4 @@
-#! /usr/bin/env python
+#!/usr/bin/env python
 
 # CatAmount analyzes GPS collar data to find time/space relationships.
 # Copyright (C) 2012 Michael Rickard
@@ -24,9 +24,12 @@
 
 # IMPORT
 
-from datetime import timedelta
+import sys
 
-from catamount.common import *
+import Image
+import ImageDraw
+
+import catamount.common as catcm
 
 
 # CONSTANTS/GLOBALS
@@ -36,14 +39,14 @@ whodunit_dot_size = 4
 
 # CLASSES
 
-class FWDataPool(DataPool):
+class FWDataPool(catcm.DataPool):
 	"""Extension to a plain DataPool adding things useful for finding whodunit.
 
 	This adds the ability to search the data for a match to a given
 	request, and to display those matches."""
 
 	def __init__(self, radius, time_cutoff, x, y):
-		DataPool.__init__(self)
+		catcm.DataPool.__init__(self)
 
 		self.radius = radius
 		self.time_cutoff = time_cutoff
@@ -79,7 +82,7 @@ class FWDataPool(DataPool):
 		sys.stdout.write(','.join(field_list) + '\n')
 
 		# First line will be the request data
-		request_list = ['Request', '----', self.dateobj.strftime(DATE_FMT_ISO),
+		request_list = ['Request', '----', self.dateobj.strftime(catcm.DATE_FMT_ISO),
 			'{:0.1f}'.format(self.x), '{:0.1f}'.format(self.y), '----', '----', '----']
 		sys.stdout.write(','.join(request_list) + '\n')
 
@@ -133,7 +136,7 @@ class FWDataPool(DataPool):
 		img_x = self.img_x(self.x)
 		img_y = self.img_y(self.y)
 		radius = self.radius / self.scale
-		circleimg = Image.new('RGB', (self.imgwidth, self.imgheight), image_colors['whodunit'])
+		circleimg = Image.new('RGB', (self.imgwidth, self.imgheight), catcm.image_colors['whodunit'])
 		circlemask = Image.new('L', (self.imgwidth, self.imgheight), '#000000')
 		circlemaskdraw = ImageDraw.Draw(circlemask)
 		circlemaskdraw.ellipse(
@@ -143,11 +146,11 @@ class FWDataPool(DataPool):
 		self.fgimage.paste(circleimg, (0, 0), circlemask)
 
 		# Create a cross at the target location
-		self.fgdraw.line([(img_x - 2, img_y), (img_x + 2, img_y)], image_colors['whodunit'])
-		self.fgdraw.line([(img_x, img_y - 2), (img_x, img_y + 2)], image_colors['whodunit'])
+		self.fgdraw.line([(img_x - 2, img_y), (img_x + 2, img_y)], catcm.image_colors['whodunit'])
+		self.fgdraw.line([(img_x, img_y - 2), (img_x, img_y + 2)], catcm.image_colors['whodunit'])
 
 		# Draw a faintly colored dot for every close point
-		closeimg = Image.new('RGB', (self.imgwidth, self.imgheight), image_colors['bg'])
+		closeimg = Image.new('RGB', (self.imgwidth, self.imgheight), catcm.image_colors['bg'])
 		closeimgdraw = ImageDraw.Draw(closeimg)
 		closemask = Image.new('L', (self.imgwidth, self.imgheight), '#000000')
 		closemaskdraw = ImageDraw.Draw(closemask)
@@ -182,7 +185,7 @@ class FWDataPool(DataPool):
 		for fix in self.fixes:
 			img_x = self.img_x(fix.x)
 			img_y = self.img_y(fix.y)
-			self.fgdraw.point((img_x, img_y), image_colors['fg'])
+			self.fgdraw.point((img_x, img_y), catcm.image_colors['fg'])
 
 
 class Match(object):
@@ -204,7 +207,7 @@ class Match(object):
 		field_list = [
 			self.status,
 			self.fix.catid,
-			self.fix.dateobj.strftime(DATE_FMT_ISO),
+			self.fix.dateobj.strftime(catcm.DATE_FMT_ISO),
 			'{:0.1f}'.format(self.fix.x),
 			'{:0.1f}'.format(self.fix.y),
 			'{:0.3f}'.format(self.closeness),
@@ -218,7 +221,7 @@ class Match(object):
 
 		field_list = [
 			self.fix.catid,
-			self.fix.dateobj.strftime(DATE_FMT_ISO),
+			self.fix.dateobj.strftime(catcm.DATE_FMT_ISO),
 			'{:0.1f} east'.format(self.fix.x),
 			'{:0.1f} north'.format(self.fix.y),
 			'{:6.3f}'.format(self.closeness),

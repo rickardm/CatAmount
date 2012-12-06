@@ -1,4 +1,4 @@
-#! /usr/bin/env python
+#!/usr/bin/env python
 
 # CatAmount analyzes GPS collar data to find time/space relationships.
 # Copyright (C) 2012 Michael Rickard
@@ -24,9 +24,15 @@
 
 # IMPORT
 
+import os
+import sys
+import argparse
+
+from csv import reader as csvreader
 from csv import DictReader
 
-from catamount.match_survey_to_cluster import *
+import catamount.common as catcm
+import catamount.match_survey_to_cluster as catms
 
 
 # GLOBALS
@@ -61,28 +67,28 @@ argman = argparse.ArgumentParser(
 argman.add_argument(
 	'-f', '--datafile_path',
 	dest='datafile_path', action='store',
-	type=check_file_arg, default=cfg_datafile_path,
+	type=catcm.check_file_arg, default=catcm.cfg_datafile_path,
 	help='Search through this data file.'
 )
 
 argman.add_argument(
 	'-s', '--survey_file_path',
 	dest='survey_file_path', action='store',
-	type=check_file_arg, default=cfg_matchsurvey_survey_file_path,
+	type=catcm.check_file_arg, default=catcm.cfg_matchsurvey_survey_file_path,
 	help='This file contains site surveys, the basis for the search.'
 )
 
 argman.add_argument(
 	'-r', '--radius',
 	dest='radius', action='store',
-	type=int, default=cfg_matchsurvey_radius,
+	type=int, default=catcm.cfg_matchsurvey_radius,
 	help='Design radius of a match, in meters.'
 )
 
 argman.add_argument(
 	'-t', '--time_cutoff',
 	dest='time_cutoff', action='store',
-	type=hours_arg_to_seconds, default=cfg_matchsurvey_time_cutoff,
+	type=catcm.hours_arg_to_seconds, default=catcm.cfg_matchsurvey_time_cutoff,
 	help='Design time cutoff of a match, in hours.'
 )
 
@@ -94,8 +100,8 @@ argman.add_argument(
 args = argman.parse_args()
 
 # Make sure integer arguments are in a reasonable range.
-args.radius = constrain_integer(args.radius, 0, 1000)
-args.time_cutoff = constrain_integer(args.time_cutoff, 0, 31536000)
+args.radius = catcm.constrain_integer(args.radius, 0, 1000)
+args.time_cutoff = catcm.constrain_integer(args.time_cutoff, 0, 31536000)
 
 #print('Process the data file...')
 
@@ -104,12 +110,12 @@ with open(args.datafile_path, 'rb') as datafile:
 	csvrows = csvreader(datafile)
 
 	# Create a new DataPool object to work with
-	datapool = MSDataPool(args.radius, args.time_cutoff)
+	datapool = catms.MSDataPool(args.radius, args.time_cutoff)
 
 	# For every row, create a Fix object and it to the DataPool
 	for csvrow in csvrows:
 		try:
-			new_fix = Fix(csvrow)
+			new_fix = catcm.Fix(csvrow)
 		except ValueError:
 			sys.stderr.write('CSV row doesn\'t look like data: {}\n'.format(csvrow))
 			continue
@@ -132,10 +138,10 @@ with open(args.survey_file_path, 'rb') as survey_file:
 	csvrows = DictReader(survey_file)
 
 	# Create a new SurveyPool object to work with
-	surveypool = SurveyPool(args.radius, args.time_cutoff)
+	surveypool = catms.SurveyPool(args.radius, args.time_cutoff)
 
 	for csvrow in csvrows:
-		survey = Survey(csvrow, date_headers, location_easting_headers, location_northing_headers)
+		survey = catms.Survey(csvrow, date_headers, location_easting_headers, location_northing_headers)
 
 		surveypool.surveys.append(survey)
 
