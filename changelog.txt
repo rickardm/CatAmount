@@ -1,3 +1,8 @@
+2012-12-06 04:47 utc - MRR - 13625.935
+--------------------------------------
+* Change from using wildcard imports for the catamount modules. Add
+  all the namespace elements required by this change.
+
 2012-12-05 22:42 utc - MRR - 13625.682
 --------------------------------------
 * Remove all hyphens from formulated file names, because ArcGIS
