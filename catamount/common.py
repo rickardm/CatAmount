@@ -42,8 +42,8 @@ import ImageFont
 # CONSTANTS/GLOBALS
 
 APP_NAME = 'CatAmount'
-APP_VERSION = '13625.935'
-APP_COPYRIGHT = 'Copyright (C) 2012 Michael Rickard'
+APP_VERSION = '15873.653'
+APP_COPYRIGHT = 'Copyright (C) 2019 Michael Rickard'
 
 DATE_FMT_ID = '%Y%m%d-%H%M'
 DATE_FMT_ID_SHORT = '%Y%m%d'
@@ -540,12 +540,12 @@ class Fix(object):
 	def set_values_from_csv(self):
 		"""Process the raw data from CSV into attributes"""
 
-		self.id = self.csvrow[0]
-		self.catid = self.csvrow[1]
-		self.dateobj = dateparser.parse(self.csvrow[4])
+		self.id = self.csvrow[int(cfg_data_column_fixid)]
+		self.catid = self.csvrow[int(cfg_data_column_catid)]
+		self.dateobj = dateparser.parse(self.csvrow[int(cfg_data_column_utcdatetime)])
 		self.time = time.mktime(self.dateobj.timetuple())
-		self.x = float(self.csvrow[7])
-		self.y = float(self.csvrow[6])
+		self.x = float(self.csvrow[int(cfg_data_column_utmx)])
+		self.y = float(self.csvrow[int(cfg_data_column_utmy)])
 
 	def determine_day_or_night(self):
 		# Default is to not calculate day vs. night
@@ -930,14 +930,15 @@ def find_catids_early(datafile_path):
 		seen = dict()
 		catids = list()
 		for csvrow in csvrows:
+			temp_catid = csvrow[int(cfg_data_column_catid)]
 			try:
-				if csvrow[1] in seen:
+				if temp_catid in seen:
 					continue
 
-				regex_match = re.match(catid_regex, csvrow[1], re.I)
+				regex_match = re.match(catid_regex, temp_catid, re.I)
 				if regex_match:
-					catids.append(csvrow[1])
-					seen[csvrow[1]] = 1
+					catids.append(temp_catid)
+					seen[temp_catid] = 1
 			except IndexError:
 				continue
 
@@ -1082,6 +1083,11 @@ if not os.path.isfile(configfilepath):
 fallback_values = {
 	'datafile_path': 'data/ALLGPS.csv',
 	'outdir_path': 'output',
+	'data_column_fixid': '0',
+	'data_column_catid': '1',
+	'data_column_utcdatetime': '4',
+	'data_column_utmy': '6',
+	'data_column_utmx': '7',
 	'radius': '200',
 	'time_cutoff': '144',
 	'minimum_count': '0',
@@ -1097,6 +1103,11 @@ config.read(configfilepath)
 
 cfg_datafile_path = config.get('Global_Settings', 'datafile_path')
 cfg_outdir_path = config.get('Global_Settings', 'outdir_path')
+cfg_data_column_fixid = config.get('Global_Settings', 'data_column_fixid')
+cfg_data_column_catid = config.get('Global_Settings', 'data_column_catid')
+cfg_data_column_utcdatetime = config.get('Global_Settings', 'data_column_utcdatetime')
+cfg_data_column_utmy = config.get('Global_Settings', 'data_column_utmy')
+cfg_data_column_utmx = config.get('Global_Settings', 'data_column_utmx')
 
 cfg_cluster_radius = config.get('Cluster_Settings', 'radius')
 cfg_cluster_time_cutoff = config.get('Cluster_Settings', 'time_cutoff')

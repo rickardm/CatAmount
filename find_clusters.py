@@ -141,7 +141,7 @@ with open(args.datafile_path, 'rb') as datafile:
 	csvrows = csvreader(datafile)
 
 	# Limit to just one cat
-	csvrows = [csvrow for csvrow in csvrows if csvrow[1] == args.catid]
+	csvrows = [csvrow for csvrow in csvrows if csvrow[int(catcm.cfg_data_column_catid)] == args.catid]
 
 	# If no rows were retrieved, warn user that cat is not represented in the current data
 	if not csvrows:

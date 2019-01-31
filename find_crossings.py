@@ -125,7 +125,7 @@ with open(args.datafile_path, 'rb') as datafile:
 
 	# Limit to certain cats, if requested
 	if args.catids:
-		csvrows = [csvrow for csvrow in csvrows if csvrow[1] in args.catids]
+		csvrows = [csvrow for csvrow in csvrows if csvrow[int(catcm.cfg_data_column_catid)] in args.catids]
 
 	# If no rows were retrieved, warn user that cat is not represented in the current data
 	if not csvrows:

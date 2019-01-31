@@ -1,3 +1,11 @@
+2019-01-31 22:02 utc - MRR - 15873.653
+--------------------------------------
+* Make the order of data fields within the CSV data file configurable
+  rather than hard-coded. This opens up the possibility that proper
+  readings could be derived from a data file where the columns are not
+  in the expected order. Currently not exposed or documented for
+  simplicity.
+
 2012-12-06 04:47 utc - MRR - 13625.935
 --------------------------------------
 * Change from using wildcard imports for the catamount modules. Add
