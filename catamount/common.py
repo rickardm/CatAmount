@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 
 # CatAmount analyzes GPS collar data to find time/space relationships.
 # Copyright (C) 2012 Michael Rickard
@@ -31,12 +31,12 @@ import math
 import time
 
 from dateutil import parser as dateparser
-from ConfigParser import RawConfigParser
+from configparser import RawConfigParser
 from csv import reader as csvreader
 
-import Image
-import ImageDraw
-import ImageFont
+from PIL import Image
+from PIL import ImageDraw
+from PIL import ImageFont
 
 
 # CONSTANTS/GLOBALS
@@ -668,7 +668,7 @@ class Trail(GraphicBase):
 		self.catid = catid
 		self.start_time = 0
 		self.start_dateobj = False
-		self.end_time = sys.maxint
+		self.end_time = sys.maxsize
 		self.end_dateobj = False
 
 		self.clusters = list()
@@ -836,7 +836,7 @@ class DataPool(GraphicBase):
 		self.fixes = list()
 		self.start_time = 0
 		self.start_dateobj = False
-		self.end_time = sys.maxint
+		self.end_time = sys.maxsize
 		self.end_dateobj = False
 		self.x = 0
 		self.y = 0
@@ -925,7 +925,7 @@ def find_catids_early(datafile_path):
 
 	catid_regex = '^(M|F)[\d]+$'
 
-	with open(datafile_path, 'rb') as datafile:
+	with open(datafile_path, 'rt') as datafile:
 		csvrows = csvreader(datafile)
 		seen = dict()
 		catids = list()

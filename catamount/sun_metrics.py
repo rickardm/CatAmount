@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 
 # SunMetrics calculates the position of the sun at a given time and place.
 # Copyright (C) 2012 Michael Rickard
@@ -197,7 +197,7 @@ class SunMetrics(object):
 			self.datetime_local = self.tz_local.localize(datetime_request)
 			self.datetime_utc = self.datetime_local.astimezone(self.tz_utc)
 		else:
-			print 'Invalid argument for utc_or_local: {}. Should be "utc" or "local"'.format(utc_or_local)
+			print('Invalid argument for utc_or_local: {}. Should be "utc" or "local"'.format(utc_or_local))
 			return False
 
 		self.calculate()

@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 
 # CatAmount analyzes GPS collar data to find time/space relationships.
 # Copyright (C) 2012 Michael Rickard
@@ -113,7 +113,7 @@ args.x = catcm.constrain_integer(args.x, 0, 1000000)
 args.y = catcm.constrain_integer(args.y, 0, 10000000)
 
 # Open and process the data file
-with open(args.datafile_path, 'rb') as datafile:
+with open(args.datafile_path, 'rt') as datafile:
 	csvrows = csvreader(datafile)
 
 	# Create a new DataPool object to work with

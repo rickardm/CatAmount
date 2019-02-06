@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 
 # CatAmount analyzes GPS collar data to find time/space relationships.
 # Copyright (C) 2012 Michael Rickard
@@ -20,7 +20,10 @@
 # University of Alberta and Kyle Knopff at The Central East Slopes
 # Cougar Study.
 
-# This file provides facilities to identify one cat's time/space groupings, called clusters.
+# Field work identifies sites with a certain time, location, activity.
+# GPS data collects a history of an animal's movements.
+# This uses field work as input, and looks for matching clusters in the GPS data.
+# It tries to create links between the field work notes and GPS collar data.
 
 # IMPORT
 
@@ -106,7 +109,7 @@ args.time_cutoff = catcm.constrain_integer(args.time_cutoff, 0, 31536000)
 #print('Process the data file...')
 
 # Open and process the data file
-with open(args.datafile_path, 'rb') as datafile:
+with open(args.datafile_path, 'rt') as datafile:
 	csvrows = csvreader(datafile)
 
 	# Create a new DataPool object to work with
@@ -134,7 +137,7 @@ datapool.find_all_clusters()
 #print('Process the survey file...')
 
 # Open and process the survey file
-with open(args.survey_file_path, 'rb') as survey_file:
+with open(args.survey_file_path, 'rt') as survey_file:
 	csvrows = DictReader(survey_file)
 
 	# Create a new SurveyPool object to work with

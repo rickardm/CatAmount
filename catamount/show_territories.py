@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 
 # CatAmount analyzes GPS collar data to find time/space relationships.
 # Copyright (C) 2012 Michael Rickard
@@ -26,8 +26,8 @@
 
 import math
 
-import Image
-import ImageDraw
+from PIL import Image
+from PIL import ImageDraw
 
 import catamount.common as catcm
 
@@ -61,13 +61,13 @@ class STDataPool(catcm.DataPool):
 
 			self.trails[fix.catid].fixes.append(fix)
 
-		for trail in self.trails.itervalues():
+		for trail in self.trails.values():
 			trail.find_bounds()
 
 	def calculate_angles(self):
 		"""Have each Trail find the angles and angle distance for its fixes."""
 
-		for trail in self.trails.itervalues():
+		for trail in self.trails.values():
 			trail.calculate_angles()
 
 	def draw_object_specific_graphics(self):
@@ -88,7 +88,7 @@ class STDataPool(catcm.DataPool):
 
 		# Draw a border around each cat's datapool
 		# Currently uses radial concept to find points around the perimeter of a range
-		for trail in self.trails.itervalues():
+		for trail in self.trails.values():
 			fixes_by_angle = dict()
 			for degree in range(0, 360):
 				fixes_by_angle[degree] = list()

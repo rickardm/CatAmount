@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 
 # CatAmount analyzes GPS collar data to find time/space relationships.
 # Copyright (C) 2012 Michael Rickard
@@ -137,7 +137,7 @@ args.minimum_stay = catcm.constrain_integer(args.minimum_stay, 0, 8640000)
 sun_metrics = catsm.SunMetrics()
 
 # Open and process the data file
-with open(args.datafile_path, 'rb') as datafile:
+with open(args.datafile_path, 'rt') as datafile:
 	csvrows = csvreader(datafile)
 
 	# Limit to just one cat

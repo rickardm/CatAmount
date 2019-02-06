@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 
 # CatAmount analyzes GPS collar data to find time/space relationships.
 # Copyright (C) 2012 Michael Rickard
@@ -26,8 +26,8 @@
 
 import sys
 
-import Image
-import ImageDraw
+from PIL import Image
+from PIL import ImageDraw
 
 import catamount.common as catcm
 
@@ -154,29 +154,29 @@ class FWDataPool(catcm.DataPool):
 		closeimgdraw = ImageDraw.Draw(closeimg)
 		closemask = Image.new('L', (self.imgwidth, self.imgheight), '#000000')
 		closemaskdraw = ImageDraw.Draw(closemask)
-		
-	 	for close in self.close:
-	 		img_x = self.img_x(close.fix.x)
-	 		img_y = self.img_y(close.fix.y)
-	 		radius = whodunit_dot_size / 2
-	 		bigger = whodunit_dot_size
-	 		closeimgdraw.ellipse(
+
+		for close in self.close:
+			img_x = self.img_x(close.fix.x)
+			img_y = self.img_y(close.fix.y)
+			radius = whodunit_dot_size / 2
+			bigger = whodunit_dot_size
+			closeimgdraw.ellipse(
 				[(img_x - bigger, img_y - bigger), (img_x + bigger, img_y + bigger)],
 				self.cat_colors[close.fix.catid], self.cat_colors[close.fix.catid]
 			)
-	 		closemaskdraw.ellipse(
+			closemaskdraw.ellipse(
 				[(img_x - radius, img_y - radius), (img_x + radius, img_y + radius)],
 				'#404040', '#404040'
 			)
-		 
+
 		self.fgimage.paste(closeimg, (0, 0), closemask)
 
 		# Draw a colored dot for every match point
-	 	for match in self.matches:
-	 		img_x = self.img_x(match.fix.x)
-	 		img_y = self.img_y(match.fix.y)
-	 		radius = whodunit_dot_size / 2
-	 		self.fgdraw.ellipse(
+		for match in self.matches:
+			img_x = self.img_x(match.fix.x)
+			img_y = self.img_y(match.fix.y)
+			radius = whodunit_dot_size / 2
+			self.fgdraw.ellipse(
 				[(img_x - radius, img_y - radius), (img_x + radius, img_y + radius)],
 				self.cat_colors[match.fix.catid], self.cat_colors[match.fix.catid]
 			)

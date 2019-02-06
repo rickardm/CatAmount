@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 
 # CatAmount analyzes GPS collar data to find time/space relationships.
 # Copyright (C) 2012 Michael Rickard
@@ -27,10 +27,10 @@
 import os
 import sys
 
-import Tkinter as tk
-import tkFileDialog as tkfd
-import Image
-import ImageTk
+import tkinter as tk
+from tkinter import filedialog as tkfd
+from PIL import Image
+from PIL import ImageTk
 import subprocess
 
 import catamount.common as catcm
@@ -1075,13 +1075,12 @@ class MainWindow(object):
 			self.crossing_catids_list['state'] = tk.NORMAL
 
 	def call_script(self, args, filename, function_name):
-		script_process = subprocess.Popen(args, shell=False, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
-		communication = script_process.communicate()
+		script_process = subprocess.run(args, capture_output=True)
 
-		if communication[1]:
-			self.feedback.set(communication[1].replace('\r', ''))
+		if script_process.stderr:
+			self.feedback.set(script_process.stderr)
 
-		if communication[0]:
+		if script_process.stdout:
 			if (function_name == 'find_clusters') and (self.cluster_text_style.get() == 'csv'):
 				textfilename = filename + '.csv'
 			elif (function_name == 'find_crossings') and (self.crossing_text_style.get() == 'csv'):
@@ -1092,7 +1091,7 @@ class MainWindow(object):
 				textfilename = filename + '.csv'
 			else:
 				textfilename = filename + '.txt'
-			textwindow = TextWindow(communication[0].replace('\r', ''), self.outdir_path.get(), textfilename)
+			textwindow = TextWindow(script_process.stdout, self.outdir_path.get(), textfilename)
 
 		imagefilepath = os.path.join(self.outdir_path.get(), filename + '.png')
 		if os.path.isfile(imagefilepath):

@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 
 # CatAmount analyzes GPS collar data to find time/space relationships.
 # Copyright (C) 2012 Michael Rickard
@@ -166,7 +166,7 @@ class Survey(object):
 	def parse_survey_data(self):
 		"""Turn input dict of keys and values into named attributes."""
 
-		for data_key, data_value in self.data_set.iteritems():
+		for data_key, data_value in self.data_set.items():
 			self.attributes[data_key.strip()] = data_value.strip()
 
 	def test_attribute_presence(self):
