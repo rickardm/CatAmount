@@ -1091,7 +1091,7 @@ class MainWindow(object):
 				textfilename = filename + '.csv'
 			else:
 				textfilename = filename + '.txt'
-			textwindow = TextWindow(script_process.stdout, self.outdir_path.get(), textfilename)
+			textwindow = TextWindow(script_process.stdout.decode('utf-8'), self.outdir_path.get(), textfilename)
 
 		imagefilepath = os.path.join(self.outdir_path.get(), filename + '.png')
 		if os.path.isfile(imagefilepath):
@@ -1348,7 +1348,7 @@ class TextWindow(object):
 
 		self.text_box = tk.Text(
 			self.uniframe, width=144, height=40, padx=4, pady=4,
-			font=('Courier New', 9), relief='sunken', borderwidth=1, background='#FFFFFF'
+			font=('Courier New', 10), relief='sunken', borderwidth=1, background='#FFFFFF'
 		)
 		self.scrollbar = tk.Scrollbar(self.uniframe)
 		self.text_box.insert(tk.END, self.text)
