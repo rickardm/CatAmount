@@ -71,7 +71,7 @@ class FXDataPool(catcm.DataPool):
 			current_item = fixes.pop(0)
 
 			# If this fix has already been used in another cluster, skip it
-			if '{0}-{1}'.format(current_item.catid, current_item.time) in already_used:
+			if '{}-{}'.format(current_item.catid, current_item.time) in already_used:
 				continue
 
 			# Search ahead in the list of fixes, looking for matches
@@ -81,7 +81,7 @@ class FXDataPool(catcm.DataPool):
 
 				for fix in fixes:
 					# If this fix has already been used in another cluster, skip it
-					if '{0}-{1}'.format(fix.catid, fix.time) in already_used:
+					if '{}-{}'.format(fix.catid, fix.time) in already_used:
 						continue
 
 					# If we have gone past the time limit we can stop searching forward
@@ -116,7 +116,7 @@ class FXDataPool(catcm.DataPool):
 						potential_away_fixes = list()
 
 						# Mark the matched point as having already appeared in a cluster
-						already_used['{0}-{1}'.format(fix.catid, fix.time)] = 1
+						already_used['{}-{}'.format(fix.catid, fix.time)] = 1
 
 					# If we didn't find a match, this point becomes a potential away point
 					else:
@@ -162,7 +162,7 @@ class FXDataPool(catcm.DataPool):
 
 			# Do the following if the cluster involves more than one cat
 			catids = sorted(catids)
-			crossingid = '{0}-{1}'.format(cluster.home_fixes[0].dateobj.strftime(catcm.DATE_FMT_ID), '_'.join(catids))
+			crossingid = '{}-{}'.format(cluster.home_fixes[0].dateobj.strftime(catcm.DATE_FMT_ID), '_'.join(catids))
 			self.crossings.append(
 				Crossing(crossingid, cluster.home_fixes, cluster.away_fixes, cluster.all_fixes, catids, self.radius, self.time_cutoff, self.legend_start_date, self.legend_end_date)
 			)
@@ -238,10 +238,10 @@ class FXDataPool(catcm.DataPool):
 		"""Create a descriptive report describing all the crossings that were found."""
 
 		output = '\nCrossing Settings Are As Follows:\n'
-		output += '  * Radius: {0} meters\n'.format(self.radius)
-		output += '  * Time Cutoff: {0} hours\n'.format(self.time_cutoff // 3600)
-		output += '  * Start Date: {0}\n'.format(self.legend_start_date)
-		output += '  * End Date: {0}\n'.format(self.legend_end_date)
+		output += '  * Radius: {} meters\n'.format(self.radius)
+		output += '  * Time Cutoff: {} hours\n'.format(self.time_cutoff // 3600)
+		output += '  * Start Date: {}\n'.format(self.legend_start_date)
+		output += '  * End Date: {}\n'.format(self.legend_end_date)
 		output += '\nCrossings Found:\n\n'
 		sys.stdout.write(output)
 
@@ -253,16 +253,16 @@ class FXDataPool(catcm.DataPool):
 
 		# Write information about the image across the bottom
 		column_1 = list()
-		column_1.append(('Radius', '{0} meters'.format(self.radius)))
-		column_1.append(('Time Cutoff', '{0} hours'.format(self.time_cutoff // 3600)))
+		column_1.append(('Radius', '{} meters'.format(self.radius)))
+		column_1.append(('Time Cutoff', '{} hours'.format(self.time_cutoff // 3600)))
 		column_1.append(('Start Date', self.legend_start_date))
 		column_1.append(('End Date', self.legend_end_date))
 
 		column_2 = list()
-		column_2.append(('Crossings Found', '{0}'.format(len(self.crossings))))
-		column_2.append(('X Range', '{0:0.1f} km'.format(self.spread_x / 1000)))
-		column_2.append(('Y Range', '{0:0.1f} km'.format(self.spread_y / 1000)))
-		column_2.append(('Scale', '1 px = {0} m'.format(self.scale)))
+		column_2.append(('Crossings Found', '{}'.format(len(self.crossings))))
+		column_2.append(('X Range', '{:0.1f} km'.format(self.spread_x / 1000)))
+		column_2.append(('Y Range', '{:0.1f} km'.format(self.spread_y / 1000)))
+		column_2.append(('Scale', '1 px = {} m'.format(self.scale)))
 
 		self.legend_info = [column_1, column_2]
 		self.draw_legend(True)
@@ -412,19 +412,19 @@ class Crossing(catcm.Cluster):
 	def descriptive_report(self, all_points):
 		"""Create a descriptive report describing this one crossing."""
 
-		output = 'Crossing {0}\n'.format(self.id)
-		output += '  Cats: {0}\n'.format(', '.join(self.catids))
-		output += '  Dates: From {0} to {1} (utc)\n'.format(self.start_dateobj.strftime(catcm.DATE_FMT_ISO), self.end_dateobj.strftime(catcm.DATE_FMT_ISO))
-		output += '  Elapsed Time: {0:0.2f} hours\n'.format(self.elapsed_time / 3600)
-		output += '  Center Location: {0:0.2f} east, {1:0.2f} north (NAD27)\n'.format(self.x, self.y)
+		output = 'Crossing {}\n'.format(self.id)
+		output += '  Cats: {}\n'.format(', '.join(self.catids))
+		output += '  Dates: From {} to {} (utc)\n'.format(self.start_dateobj.strftime(catcm.DATE_FMT_ISO), self.end_dateobj.strftime(catcm.DATE_FMT_ISO))
+		output += '  Elapsed Time: {:0.2f} hours\n'.format(self.elapsed_time / 3600)
+		output += '  Center Location: {:0.2f} east, {:0.2f} north (NAD27)\n'.format(self.x, self.y)
 		output += '  Closest Meetings:\n'
 
 		for closest_meeting in self.closest_meetings:
 			first = closest_meeting[0]
 			second = closest_meeting[1]
-			output += '    {0:0.2f} hours, {1:0.2f} meters:\n'.format(first.delay_from(second) / 3600, first.distance_from(second))
-			output += '      {0}, {1:0.02f} east, {2:0.02f} north, {3} utc\n'.format(first.catid, first.x, first.y, first.dateobj.strftime(catcm.DATE_FMT_ISO))
-			output += '      {0}, {1:0.02f} east, {2:0.02f} north, {3} utc\n'.format(second.catid, second.x, second.y, second.dateobj.strftime(catcm.DATE_FMT_ISO))
+			output += '    {:0.2f} hours, {:0.2f} meters:\n'.format(first.delay_from(second) / 3600, first.distance_from(second))
+			output += '      {}, {:0.02f} east, {:0.02f} north, {} utc\n'.format(first.catid, first.x, first.y, first.dateobj.strftime(catcm.DATE_FMT_ISO))
+			output += '      {}, {:0.02f} east, {:0.02f} north, {} utc\n'.format(second.catid, second.x, second.y, second.dateobj.strftime(catcm.DATE_FMT_ISO))
 
 		sys.stdout.write(output)
 	
@@ -440,8 +440,8 @@ class Crossing(catcm.Cluster):
 
 		# Write information about the image across the bottom
 		column_1 = list()
-		column_1.append(('Radius', '{0} meters'.format(self.radius)))
-		column_1.append(('Time Cutoff', '{0} hours'.format(self.time_cutoff // 3600)))
+		column_1.append(('Radius', '{} meters'.format(self.radius)))
+		column_1.append(('Time Cutoff', '{} hours'.format(self.time_cutoff // 3600)))
 		column_1.append(('Start Date', self.legend_start_date))
 		column_1.append(('End Date', self.legend_end_date))
 
@@ -449,15 +449,15 @@ class Crossing(catcm.Cluster):
 		column_2.append(('Crossing ID', self.id))
 		column_2.append(('Start Date', self.start_dateobj.strftime(catcm.DATE_FMT_ISO_SHORT)))
 		column_2.append(('End Date', self.end_dateobj.strftime(catcm.DATE_FMT_ISO_SHORT)))
-		column_2.append(('Center X', '{0:0.1f}'.format(self.x)))
-		column_2.append(('Center Y', '{0:0.1f}'.format(self.y)))
+		column_2.append(('Center X', '{:0.1f}'.format(self.x)))
+		column_2.append(('Center Y', '{:0.1f}'.format(self.y)))
 
 		closest = self.closest_meetings[0]
 		first = closest[0]
 		second = closest[1]
-		column_2.append(('Closest', '{0:0.2f} hr, {1:0.2f} m'.format((first.delay_from(second) / 3600), first.distance_from(second))))
+		column_2.append(('Closest', '{:0.2f} hr, {:0.2f} m'.format((first.delay_from(second) / 3600), first.distance_from(second))))
 
-		column_2.append(('Scale', '1 px = {0} m'.format(self.scale)))
+		column_2.append(('Scale', '1 px = {} m'.format(self.scale)))
 
 		self.legend_info = [column_1, column_2]
 		self.draw_legend(True)

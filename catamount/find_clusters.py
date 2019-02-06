@@ -179,13 +179,13 @@ class FCTrail(catcm.Trail):
 		"""Create a descriptive report describing the clusters that were found."""
 
 		output = '\nCluster Settings Are As Follows:\n'
-		output += '  * Cat ID: {0}\n'.format(self.catid)
-		output += '  * Radius: {0} meters\n'.format(self.radius)
-		output += '  * Time Cutoff: {0} hours\n'.format(self.time_cutoff // 3600)
-		output += '  * Start Date: {0}\n'.format(self.legend_start_date)
-		output += '  * End Date: {0}\n'.format(self.legend_end_date)
-		output += '  * Minimum Count: {0} fixes\n'.format(self.minimum_count)
-		output += '  * Minimum Stay: {0} hours\n'.format(self.minimum_stay // 3600)
+		output += '  * Cat ID: {}\n'.format(self.catid)
+		output += '  * Radius: {} meters\n'.format(self.radius)
+		output += '  * Time Cutoff: {} hours\n'.format(self.time_cutoff // 3600)
+		output += '  * Start Date: {}\n'.format(self.legend_start_date)
+		output += '  * End Date: {}\n'.format(self.legend_end_date)
+		output += '  * Minimum Count: {} fixes\n'.format(self.minimum_count)
+		output += '  * Minimum Stay: {} hours\n'.format(self.minimum_stay // 3600)
 		output += '\nClusters Found:\n\n'
 		sys.stdout.write(output)
 
@@ -198,18 +198,18 @@ class FCTrail(catcm.Trail):
 		# Write information about the image across the bottom
 		column_1 = list()		
 		column_1.append(('Cat ID', self.catid))
-		column_1.append(('Radius', '{0} meters'.format(self.radius)))
-		column_1.append(('Time Cutoff', '{0} hours'.format(self.time_cutoff // 3600)))
+		column_1.append(('Radius', '{} meters'.format(self.radius)))
+		column_1.append(('Time Cutoff', '{} hours'.format(self.time_cutoff // 3600)))
 		column_1.append(('Start Date', self.legend_start_date))
 		column_1.append(('End Date', self.legend_end_date))
-		column_1.append(('Min. Count', '{0} fixes'.format(self.minimum_count)))
-		column_1.append(('Min. Stay', '{0} hours'.format(self.minimum_stay // 3600)))
+		column_1.append(('Min. Count', '{} fixes'.format(self.minimum_count)))
+		column_1.append(('Min. Stay', '{} hours'.format(self.minimum_stay // 3600)))
 
 		column_2 = list()
-		column_2.append(('Clusters Found', '{0}'.format(len(self.clusters))))
-		column_2.append(('X Range', '{0:0.1f} km'.format(self.spread_x / 1000)))
-		column_2.append(('Y Range', '{0:0.1f} km'.format(self.spread_y / 1000)))
-		column_2.append(('Scale', '1 px = {0} m'.format(self.scale)))
+		column_2.append(('Clusters Found', '{}'.format(len(self.clusters))))
+		column_2.append(('X Range', '{:0.1f} km'.format(self.spread_x / 1000)))
+		column_2.append(('Y Range', '{:0.1f} km'.format(self.spread_y / 1000)))
+		column_2.append(('Scale', '1 px = {} m'.format(self.scale)))
 
 		self.legend_info = [column_1, column_2]
 		self.draw_legend()
@@ -303,21 +303,21 @@ class FCCluster(catcm.Cluster):
 		# Write information about the image across the bottom
 		column_1 = list()
 		column_1.append(('Cat ID', self.catid))
-		column_1.append(('Radius', '{0} meters'.format(self.radius)))
-		column_1.append(('Time Cutoff', '{0} hours'.format(self.time_cutoff // 3600)))
+		column_1.append(('Radius', '{} meters'.format(self.radius)))
+		column_1.append(('Time Cutoff', '{} hours'.format(self.time_cutoff // 3600)))
 		column_1.append(('Start Date', self.legend_start_date))
 		column_1.append(('End Date', self.legend_end_date))
-		column_1.append(('Min. Count', '{0}'.format(self.minimum_count)))
-		column_1.append(('Min. Stay', '{0} hours'.format(self.minimum_stay // 3600)))
+		column_1.append(('Min. Count', '{}'.format(self.minimum_count)))
+		column_1.append(('Min. Stay', '{} hours'.format(self.minimum_stay // 3600)))
 
 		column_2 = list()
 		column_2.append(('Cluster ID', self.id))
 		column_2.append(('Start Date', self.start_dateobj.strftime(catcm.DATE_FMT_ISO_SHORT)))
 		column_2.append(('End Date', self.end_dateobj.strftime(catcm.DATE_FMT_ISO_SHORT)))
-		column_2.append(('Center X', '{0:0.1f}'.format(self.x)))
-		column_2.append(('Center Y', '{0:0.1f}'.format(self.y)))
-		column_2.append(('Fidelity', '{0}/{1}, {2:0.2f}%'.format(len(self.home_fixes), len(self.all_fixes), self.fidelity)))
-		column_2.append(('Scale', '1 px = {0} m'.format(self.scale)))
+		column_2.append(('Center X', '{:0.1f}'.format(self.x)))
+		column_2.append(('Center Y', '{:0.1f}'.format(self.y)))
+		column_2.append(('Fidelity', '{}/{}, {:0.2f}%'.format(len(self.home_fixes), len(self.all_fixes), self.fidelity)))
+		column_2.append(('Scale', '1 px = {} m'.format(self.scale)))
 
 		self.legend_info = [column_1, column_2]
 		self.draw_legend()

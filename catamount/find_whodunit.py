@@ -96,11 +96,11 @@ class FWDataPool(catcm.DataPool):
 		"""Create a descriptive report describing all the matches that were found."""
 
 		output = '\nWhodunit Settings Are As Follows:\n'
-		output += '  * Radius: {0} meters\n'.format(self.radius)
-		output += '  * Time Cutoff: {0} hours\n'.format(self.time_cutoff // 3600)
-		output += '  * Request Date: {0}\n'.format(self.legend_date)
-		output += '  * Request X: {0}\n'.format(self.x)
-		output += '  * Request Y: {0}\n'.format(self.y)
+		output += '  * Radius: {} meters\n'.format(self.radius)
+		output += '  * Time Cutoff: {} hours\n'.format(self.time_cutoff // 3600)
+		output += '  * Request Date: {}\n'.format(self.legend_date)
+		output += '  * Request X: {}\n'.format(self.x)
+		output += '  * Request Y: {}\n'.format(self.y)
 		output += '\nMatches Found:\n'
 		sys.stdout.write(output)
 
@@ -117,17 +117,17 @@ class FWDataPool(catcm.DataPool):
 
 		# Write information about the image across the bottom
 		column_1 = list()
-		column_1.append(('Radius', '{0} meters'.format(self.radius)))
-		column_1.append(('Time Cutoff', '{0} hours'.format(self.time_cutoff // 3600)))
+		column_1.append(('Radius', '{} meters'.format(self.radius)))
+		column_1.append(('Time Cutoff', '{} hours'.format(self.time_cutoff // 3600)))
 		column_1.append(('Date', self.legend_date))
-		column_1.append(('X', '{0}'.format(self.x)))
-		column_1.append(('Y', '{0}'.format(self.y)))
+		column_1.append(('X', '{}'.format(self.x)))
+		column_1.append(('Y', '{}'.format(self.y)))
 
 		column_2 = list()
-		column_2.append(('Matches Found', '{0}'.format(len(self.matches))))
-		column_2.append(('X Range', '{0:0.1f} km'.format(self.spread_x / 1000)))
-		column_2.append(('Y Range', '{0:0.1f} km'.format(self.spread_y / 1000)))
-		column_2.append(('Scale', '1 px = {0} m'.format(self.scale)))
+		column_2.append(('Matches Found', '{}'.format(len(self.matches))))
+		column_2.append(('X Range', '{:0.1f} km'.format(self.spread_x / 1000)))
+		column_2.append(('Y Range', '{:0.1f} km'.format(self.spread_y / 1000)))
+		column_2.append(('Scale', '1 px = {} m'.format(self.scale)))
 
 		self.legend_info = [column_1, column_2]
 		self.draw_legend(True)

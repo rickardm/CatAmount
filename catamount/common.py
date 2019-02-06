@@ -135,8 +135,8 @@ class GraphicBase(object):
 		# Don't create incredibly large images
 		if self.imgheight > 10000 or self.imgwidth > 10000:
 			error_text = 'ERROR: Image dimensions would exceed 10,000 pixels, not creating image.\n'
-			error_text += 'Calculated image size is {0} by {1} pixels.\n'.format(self.imgheight, self.imgwidth)
-			error_text += 'Current scale is 1 pixel = {0} meters.\n\n'.format(self.scale)
+			error_text += 'Calculated image size is {} by {} pixels.\n'.format(self.imgheight, self.imgwidth)
+			error_text += 'Current scale is 1 pixel = {} meters.\n\n'.format(self.scale)
 			sys.stderr.write(error_text)
 			return False
 
@@ -162,7 +162,7 @@ class GraphicBase(object):
 		self.font = ImageFont.load(fontpath)
 
 		# These are the limit strings
-		limit_fmt = '{0:0.1f}'
+		limit_fmt = '{:0.1f}'
 		max_x_str = limit_fmt.format(self.img_max_x)
 		min_x_str = limit_fmt.format(self.img_min_x)
 		max_y_str = limit_fmt.format(self.img_max_y)
@@ -273,9 +273,9 @@ class GraphicBase(object):
 		# Draw number markers in the margin, as a ruler for the grid
 		number_increment = self.grid_factor / 1000
 		if self.grid_factor == 100:
-			number_format = '{0:0.1f}'
+			number_format = '{:0.1f}'
 		else:
-			number_format = '{0:0.0f}'
+			number_format = '{:0.0f}'
 
 		y_offset = ((int(self.img_max_y) % self.grid_factor) // self.scale) + self.padding
 		y_value = (int(self.img_max_y) // self.grid_factor) * number_increment
@@ -535,7 +535,7 @@ class Fix(object):
 		return 'Fix(csvrow={0!r})'.format(self.csvrow)
 
 	def __str__(self):
-		return '{0}, {1}, {2}, {3}, {4}'.format(self.id, self.catid, self.dateobj.strftime(DATE_FMT_ISO), self.x, self.y)
+		return '{}, {}, {}, {}, {}'.format(self.id, self.catid, self.dateobj.strftime(DATE_FMT_ISO), self.x, self.y)
 
 	def set_values_from_csv(self):
 		"""Process the raw data from CSV into attributes"""
@@ -688,8 +688,8 @@ class Trail(GraphicBase):
 				sys.stderr.write('WARNING: Two points with the same timestamp found! One removed.\n')
 				for unique_fix in unique:
 					if unique_fix.time == fix.time:
-						sys.stderr.write('     Kept: {0}\n'.format(unique_fix))
-				sys.stderr.write('Discarded: {0}\n\n'.format(fix))
+						sys.stderr.write('     Kept: {}\n'.format(unique_fix))
+				sys.stderr.write('Discarded: {}\n\n'.format(fix))
 				continue
 			seen[fix.time] = 1
 			unique.append(fix)
@@ -902,14 +902,14 @@ class DataPool(GraphicBase):
 		unique = list()
 		seen = dict()
 		for fix in self.fixes:
-			fix_id = '{0}-{1}'.format(fix.catid, fix.time)
+			fix_id = '{}-{}'.format(fix.catid, fix.time)
 			if fix_id in seen:
 				sys.stderr.write('WARNING: Two points with the same timestamp found. One removed.\n')
 				for unique_fix in unique:
-					unique_fix_id = '{0}-{1}'.format(unique_fix.catid, unique_fix.time)
+					unique_fix_id = '{}-{}'.format(unique_fix.catid, unique_fix.time)
 					if unique_fix_id == fix_id:
-						sys.stderr.write('     Kept: {0}\n'.format(unique_fix))
-				sys.stderr.write('Discarded: {0}\n\n'.format(fix))
+						sys.stderr.write('     Kept: {}\n'.format(unique_fix))
+				sys.stderr.write('Discarded: {}\n\n'.format(fix))
 				continue
 			seen[fix_id] = 1
 			unique.append(fix)
@@ -1027,7 +1027,7 @@ def check_file_arg(file_arg):
 			return os.path.abspath(path)
 
 	# If we didn't turn up a valid file, raise an error
-	raise argparse.ArgumentTypeError('Not a valid file: {0}'.format(file_arg))
+	raise argparse.ArgumentTypeError('Not a valid file: {}'.format(file_arg))
 
 def check_dir_arg(dir_arg):
 	"""Check the validity of a directory argument passed from the command line."""
@@ -1039,7 +1039,7 @@ def check_dir_arg(dir_arg):
 			return os.path.abspath(path)
 
 	# If we didn't turn up a valid dir, raise an error
-	raise argparse.ArgumentTypeError('Not a valid dir: {0}'.format(dir_arg))
+	raise argparse.ArgumentTypeError('Not a valid dir: {}'.format(dir_arg))
 
 def constrain_integer(original_value, minimum_value, maximum_value):
 	"""Ensures that a user-supplied integer value is in a reasonable range."""
@@ -1076,7 +1076,7 @@ basepath = os.getcwd()
 configfilepath = os.path.join(basepath, 'catamount.conf')
 
 if not os.path.isfile(configfilepath):
-	print('The config file seems to be missing. Check: {0}'.format(configfilepath))
+	print('The config file seems to be missing. Check: {}'.format(configfilepath))
 	sys.exit()
 
 # Use strings, even for integers, because that's what config file and command line deliver

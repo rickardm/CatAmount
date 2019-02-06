@@ -75,13 +75,13 @@ class STDataPool(catcm.DataPool):
 
 		# Write information about the image across the bottom
 		column_1 = list()
-		column_1.append(('X Range', '{0:0.1f} km'.format(self.spread_x / 1000)))
-		column_1.append(('Y Range', '{0:0.1f} km'.format(self.spread_y / 1000)))
+		column_1.append(('X Range', '{:0.1f} km'.format(self.spread_x / 1000)))
+		column_1.append(('Y Range', '{:0.1f} km'.format(self.spread_y / 1000)))
 		column_1.append(('Start Date', self.legend_start_date))
 		column_1.append(('End Date', self.legend_end_date))
 
 		column_2 = list()
-		column_2.append(('Scale', '1 px = {0} m'.format(self.scale)))
+		column_2.append(('Scale', '1 px = {} m'.format(self.scale)))
 
 		self.legend_info = [column_1, column_2]
 		self.draw_legend(True)

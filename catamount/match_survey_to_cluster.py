@@ -305,7 +305,7 @@ class Survey(object):
 			for index in range(0, 3):
 				try:
 					this_cluster = self.matching_clusters[index]
-					field_list.append('{0}|{1}|{2:0.1f}|{3:0.1f},'.format(this_cluster.catid, this_cluster.id, this_cluster.x, this_cluster.y))
+					field_list.append('{}|{}|{:0.1f}|{:0.1f},'.format(this_cluster.catid, this_cluster.id, this_cluster.x, this_cluster.y))
 				except IndexError:
 					field_list.append('')
 

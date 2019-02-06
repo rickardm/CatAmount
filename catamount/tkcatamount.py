@@ -47,7 +47,7 @@ class MainWindow(object):
 
 	def __init__(self):
 		self.root = tk.Tk()
-		self.root.title('{0} v{1}'.format(catcm.APP_NAME, catcm.APP_VERSION))
+		self.root.title('{} v{}'.format(catcm.APP_NAME, catcm.APP_VERSION))
 		self.root.grid()
 		self.root.columnconfigure(0, weight=1)
 		self.root.rowconfigure(0, weight=1)
@@ -97,16 +97,16 @@ class MainWindow(object):
 		self.cluster_catid.set('')
 
 		self.cluster_radius = tk.StringVar()
-		self.cluster_radius.set('{0} meters'.format(catcm.cfg_cluster_radius))
+		self.cluster_radius.set('{} meters'.format(catcm.cfg_cluster_radius))
 
 		self.cluster_time_cutoff = tk.StringVar()
-		self.cluster_time_cutoff.set('{0} hours'.format(catcm.cfg_cluster_time_cutoff))
+		self.cluster_time_cutoff.set('{} hours'.format(catcm.cfg_cluster_time_cutoff))
 
 		self.cluster_minimum_count = tk.StringVar()
-		self.cluster_minimum_count.set('{0} points'.format(catcm.cfg_cluster_minimum_count))
+		self.cluster_minimum_count.set('{} points'.format(catcm.cfg_cluster_minimum_count))
 
 		self.cluster_minimum_stay = tk.StringVar()
-		self.cluster_minimum_stay.set('{0} hours'.format(catcm.cfg_cluster_minimum_stay))
+		self.cluster_minimum_stay.set('{} hours'.format(catcm.cfg_cluster_minimum_stay))
 
 		self.cluster_start_date = tk.StringVar()
 		self.cluster_start_date.set(catcm.cfg_cluster_start_date)
@@ -125,10 +125,10 @@ class MainWindow(object):
 		self.territory_allcats.set('all')
 
 		self.territory_dot_size = tk.StringVar()
-		self.territory_dot_size.set('{0} pixels'.format(catcm.cfg_territory_dot_size))
+		self.territory_dot_size.set('{} pixels'.format(catcm.cfg_territory_dot_size))
 
 		self.territory_perimeter_resolution = tk.StringVar()
-		self.territory_perimeter_resolution.set('{0} degrees'.format(catcm.cfg_territory_perimeter_resolution))
+		self.territory_perimeter_resolution.set('{} degrees'.format(catcm.cfg_territory_perimeter_resolution))
 
 		self.territory_start_date = tk.StringVar()
 		self.territory_start_date.set(catcm.cfg_territory_start_date)
@@ -141,10 +141,10 @@ class MainWindow(object):
 		self.crossing_allcats.set('all')
 
 		self.crossing_radius = tk.StringVar()
-		self.crossing_radius.set('{0} meters'.format(catcm.cfg_crossing_radius))
+		self.crossing_radius.set('{} meters'.format(catcm.cfg_crossing_radius))
 
 		self.crossing_time_cutoff = tk.StringVar()
-		self.crossing_time_cutoff.set('{0} hours'.format(catcm.cfg_crossing_time_cutoff))
+		self.crossing_time_cutoff.set('{} hours'.format(catcm.cfg_crossing_time_cutoff))
 
 		self.crossing_start_date = tk.StringVar()
 		self.crossing_start_date.set(catcm.cfg_crossing_start_date)
@@ -160,10 +160,10 @@ class MainWindow(object):
 
 		# Whodunit Variables
 		self.whodunit_radius = tk.StringVar()
-		self.whodunit_radius.set('{0} meters'.format(catcm.cfg_whodunit_radius))
+		self.whodunit_radius.set('{} meters'.format(catcm.cfg_whodunit_radius))
 
 		self.whodunit_time_cutoff = tk.StringVar()
-		self.whodunit_time_cutoff.set('{0} hours'.format(catcm.cfg_whodunit_time_cutoff))
+		self.whodunit_time_cutoff.set('{} hours'.format(catcm.cfg_whodunit_time_cutoff))
 
 		self.whodunit_date = tk.StringVar()
 		self.whodunit_date.set('')
@@ -179,10 +179,10 @@ class MainWindow(object):
 
 		# Match Survey To Cluster Variables
 		self.matchsurvey_radius = tk.StringVar()
-		self.matchsurvey_radius.set('{0} meters'.format(catcm.cfg_matchsurvey_radius))
+		self.matchsurvey_radius.set('{} meters'.format(catcm.cfg_matchsurvey_radius))
 
 		self.matchsurvey_time_cutoff = tk.StringVar()
-		self.matchsurvey_time_cutoff.set('{0} hours'.format(catcm.cfg_matchsurvey_time_cutoff))
+		self.matchsurvey_time_cutoff.set('{} hours'.format(catcm.cfg_matchsurvey_time_cutoff))
 
 		self.matchsurvey_survey_file_path = tk.StringVar()
 		self.matchsurvey_survey_file_path.set(catcm.cfg_matchsurvey_survey_file_path)
@@ -913,7 +913,7 @@ class MainWindow(object):
 
 		self.datafile_path.set(datafile_path)
 		self.datadir_path = os.path.dirname(datafile_path)
-		self.feedback.set('New data file: "{0}"'.format(datafile_path))
+		self.feedback.set('New data file: "{}"'.format(datafile_path))
 
 		self.refresh_catids()
 
@@ -929,7 +929,7 @@ class MainWindow(object):
 			return False
 
 		self.outdir_path.set(outdir_path)
-		self.feedback.set('New ouput directory: "{0}"'.format(outdir_path))
+		self.feedback.set('New ouput directory: "{}"'.format(outdir_path))
 
 	def set_survey_file_path(self):
 		fileoptions = {
@@ -944,7 +944,7 @@ class MainWindow(object):
 
 		self.matchsurvey_survey_file_path.set(survey_file_path)
 		self.matchsurvey_survey_dir_path = os.path.dirname(survey_file_path)
-		self.feedback.set('New survey file: "{0}"'.format(survey_file_path))
+		self.feedback.set('New survey file: "{}"'.format(survey_file_path))
 
 	def check_datafile_exists(self):
 		if os.path.isfile(self.datafile_path.get()):
@@ -1026,7 +1026,7 @@ class MainWindow(object):
 
 		if direction == 'up':
 			if current_value_int >= var_max:
-				self.feedback.set('Maximum value for {0}: {1}'.format(variable_name, var_max))
+				self.feedback.set('Maximum value for {}: {}'.format(variable_name, var_max))
 				return False
 
 			if current_value_int < var_min:
@@ -1037,11 +1037,11 @@ class MainWindow(object):
 			else:
 				new_value = current_value_int + var_incr
 
-			tk_var.set('{0} {1}'.format(new_value, var_unit))
+			tk_var.set('{} {}'.format(new_value, var_unit))
 
 		elif direction == 'down':
 			if current_value_int <= var_min:
-				self.feedback.set('Minimum value for {0}: {1}'.format(variable_name, var_min))
+				self.feedback.set('Minimum value for {}: {}'.format(variable_name, var_min))
 				return False
 
 			if current_value_int > var_max:
@@ -1053,7 +1053,7 @@ class MainWindow(object):
 				new_value = current_value_int - var_incr
 
 			current_value_int -= var_incr
-			tk_var.set('{0} {1}'.format(new_value, var_unit))
+			tk_var.set('{} {}'.format(new_value, var_unit))
 
 
 	def remove_units(self, variable_value):
@@ -1235,7 +1235,7 @@ class MainWindow(object):
 		self.aboutframe = tk.Frame(self.aboutwindow)
 		self.aboutframe.grid(row=0, column=0, padx=8, pady=8)
 
-		abouttext = '{0}\nVersion {1}\n\n{2}'.format(catcm.APP_NAME, catcm.APP_VERSION, catcm.APP_COPYRIGHT)
+		abouttext = '{}\nVersion {}\n\n{}'.format(catcm.APP_NAME, catcm.APP_VERSION, catcm.APP_COPYRIGHT)
 
 		self.aboutlabel = tk.Label(self.aboutframe, text=abouttext)
 		self.aboutclose = tk.Button(self.aboutframe, text='Close', command=self.aboutwindow.destroy)
@@ -1252,7 +1252,7 @@ class GraphicWindow(object):
 		self.imagepath = imagepath
 
 		self.window = tk.Toplevel()
-		self.window.title('Image Output: {0}'.format(os.path.basename(imagepath)))
+		self.window.title('Image Output: {}'.format(os.path.basename(imagepath)))
 		self.window.columnconfigure(0, weight=1)
 		self.window.rowconfigure(0, weight=1)
 
@@ -1330,7 +1330,7 @@ class TextWindow(object):
 		self.initial_filename = initial_filename
 
 		self.window = tk.Toplevel()
-		self.window.title('Text Output: {0}'.format(initial_filename))
+		self.window.title('Text Output: {}'.format(initial_filename))
 		self.window.columnconfigure(0, weight=1)
 		self.window.rowconfigure(0, weight=1)
 		self.window.minsize(640, 480)
