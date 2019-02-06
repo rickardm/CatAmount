@@ -178,10 +178,10 @@ class GraphicBase(object):
 		)
 
 		# These are used for the placement of limit strings around the border
-		half_wide_minus_half_text = self.padding + (self.imgwidth / 2) - (len(max_y_str) * 5 / 2)
-		half_wide_plus_half_text = self.padding + (self.imgwidth / 2) + (len(max_y_str) * 5 / 2)
-		half_tall_minus_half_text = self.padding + (self.imgheight / 2) - (len(max_x_str) * 5 / 2)
-		half_tall_plus_half_text = self.padding + (self.imgheight / 2) + (len(max_x_str) * 5 / 2)
+		half_wide_minus_half_text = self.padding + (self.imgwidth // 2) - (len(max_y_str) * 5 // 2)
+		half_wide_plus_half_text = self.padding + (self.imgwidth // 2) + (len(max_y_str) * 5 // 2)
+		half_tall_minus_half_text = self.padding + (self.imgheight // 2) - (len(max_x_str) * 5 // 2)
+		half_tall_plus_half_text = self.padding + (self.imgheight // 2) + (len(max_x_str) * 5 // 2)
 
 		# Draw background color where the limit strings will be
 		self.draw.line(
@@ -225,17 +225,17 @@ class GraphicBase(object):
 		self.grid_factor = False
 		try_grid_factor = 100
 		while not self.grid_factor:
-			grid_px_size = try_grid_factor / self.scale
+			grid_px_size = try_grid_factor // self.scale
 			if grid_px_size > 12:
 				self.grid_factor = try_grid_factor
 			else:
 				try_grid_factor *= 10
 
 		# This is used for the grids, spaced grid_factor meters apart
-		px_offset = self.grid_factor / self.scale
+		px_offset = self.grid_factor // self.scale
 
 		# Draw a grid across the white rectangle, spacing to be grid_factor meters
-		y_offset = (int(self.img_max_y) % self.grid_factor) / self.scale
+		y_offset = (int(self.img_max_y) % self.grid_factor) // self.scale
 		while y_offset < self.imgheight:
 			self.fgdraw.line(
 				[(0, y_offset), (self.imgwidth, y_offset)],
@@ -243,7 +243,7 @@ class GraphicBase(object):
 			)
 			y_offset += px_offset
 		
-		x_offset = (self.grid_factor - (int(self.img_min_x) % self.grid_factor)) / self.scale
+		x_offset = (self.grid_factor - (int(self.img_min_x) % self.grid_factor)) // self.scale
 		while x_offset < self.imgwidth:
 			self.fgdraw.line(
 				[(x_offset, 0), (x_offset, self.imgheight)],
@@ -252,9 +252,9 @@ class GraphicBase(object):
 			x_offset += px_offset
 
 		# Draw a darker gray grid on top of the previous one, every ten major units
-		accent_px_offset = (10 * self.grid_factor) / self.scale
+		accent_px_offset = (10 * self.grid_factor) // self.scale
 
-		accent_y_offset = (int(self.img_max_y) % (self.grid_factor * 10)) / self.scale
+		accent_y_offset = (int(self.img_max_y) % (self.grid_factor * 10)) // self.scale
 		while accent_y_offset < self.imgheight:
 			self.fgdraw.line(
 				[(0, accent_y_offset), (self.imgwidth, accent_y_offset)],
@@ -262,7 +262,7 @@ class GraphicBase(object):
 			)
 			accent_y_offset += accent_px_offset
 
-		accent_x_offset = ((self.grid_factor * 10) - (int(self.img_min_x) % (self.grid_factor * 10))) / self.scale
+		accent_x_offset = ((self.grid_factor * 10) - (int(self.img_min_x) % (self.grid_factor * 10))) // self.scale
 		while accent_x_offset < self.imgwidth:
 			self.fgdraw.line(
 				[(accent_x_offset, 0), (accent_x_offset, self.imgheight)],
@@ -271,14 +271,14 @@ class GraphicBase(object):
 			accent_x_offset += accent_px_offset
 
 		# Draw number markers in the margin, as a ruler for the grid
-		number_increment = self.grid_factor / 1000.0
+		number_increment = self.grid_factor / 1000
 		if self.grid_factor == 100:
 			number_format = '{0:0.1f}'
 		else:
 			number_format = '{0:0.0f}'
 
-		y_offset = ((int(self.img_max_y) % self.grid_factor) / self.scale) + self.padding
-		y_value = (int(self.img_max_y) / self.grid_factor) * number_increment
+		y_offset = ((int(self.img_max_y) % self.grid_factor) // self.scale) + self.padding
+		y_value = (int(self.img_max_y) // self.grid_factor) * number_increment
 		while y_offset < (self.imgheight + self.padding):
 			y_str = number_format.format(y_value)
 			self.draw_horizontal_numbers(
@@ -294,8 +294,8 @@ class GraphicBase(object):
 			y_offset += px_offset
 			y_value -= number_increment
 
-		x_offset = ((self.grid_factor - (int(self.img_min_x) % self.grid_factor)) / self.scale) + self.padding
-		x_value = ((int(self.img_min_x) / self.grid_factor) + 1) * number_increment
+		x_offset = ((self.grid_factor - (int(self.img_min_x) % self.grid_factor)) // self.scale) + self.padding
+		x_value = ((int(self.img_min_x) // self.grid_factor) + 1) * number_increment
 		while x_offset < (self.imgwidth + self.padding):
 			x_str = number_format.format(x_value)
 			self.draw_vertical_numbers(
@@ -413,15 +413,15 @@ class GraphicBase(object):
 			colormask = Image.new('L', (rect_width, rect_height), '#000000')
 			colormaskdraw = ImageDraw.Draw(colormask)
 			half_dot = 2
-			half_x = rect_width / 2
-			half_y = rect_height / 2
+			half_x = rect_width // 2
+			half_y = rect_height // 2
 			# Sample of the color field and edge in the box
 			colormaskdraw.polygon(
 				[
 					(0, rect_height),
 					(rect_width, rect_height),
 					(rect_width, 0),
-					(rect_width / 3, 0)
+					(rect_width // 3, 0)
 				],
 				'#404040', '#FFFFFF'
 			)
@@ -627,7 +627,7 @@ class Fix(object):
 			delta_x = self.x - other.x
 			delta_y = self.y - other.y
 
-			prelim_angle = math.degrees(math.atan(delta_x / (delta_y + 0.001)))
+			prelim_angle = math.degrees(math.atan(delta_x / delta_y))
 			self.angle_from_center = prelim_angle
 
 		elif self.x >= other.x:
@@ -635,7 +635,7 @@ class Fix(object):
 			delta_x = self.x - other.x
 			delta_y = other.y - self.y
 
-			prelim_angle = math.degrees(math.atan(delta_y / (delta_x + 0.001)))
+			prelim_angle = math.degrees(math.atan(delta_y / delta_x))
 			self.angle_from_center = 90.0 + prelim_angle
 
 		elif self.y <= other.y:
@@ -643,7 +643,7 @@ class Fix(object):
 			delta_x = other.x - self.x
 			delta_y = other.y - self.y
 
-			prelim_angle = math.degrees(math.atan(delta_x / (delta_y + 0.001)))
+			prelim_angle = math.degrees(math.atan(delta_x / delta_y))
 			self.angle_from_center = 180.0 + prelim_angle
 
 		else:
@@ -651,7 +651,7 @@ class Fix(object):
 			delta_x = other.x - self.x
 			delta_y = self.y - other.y
 
-			prelim_angle = math.degrees(math.atan(delta_y / (delta_x + 0.001)))
+			prelim_angle = math.degrees(math.atan(delta_y / delta_x))
 			self.angle_from_center = 270.0 + prelim_angle
 
 
@@ -816,7 +816,7 @@ class Cluster(GraphicBase):
 			if fix_excursion > self.max_excursion:
 				self.max_excursion = fix_excursion
 
-		self.fidelity = 100.0 * (float(len(self.home_fixes)) / len(self.all_fixes))
+		self.fidelity = 100 * (len(self.home_fixes) / len(self.all_fixes))
 
 		short_status = {'home': 'O', 'away': '.'}
 		away_pattern = ''
