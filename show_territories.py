@@ -120,11 +120,11 @@ with open(args.datafile_path, 'rt') as datafile:
 	for csvrow in csvrows:
 		try:
 			new_fix = catcm.Fix(csvrow)
-		except ValueError:
-			sys.stderr.write('CSV row doesn’t look like data: {}\n'.format(csvrow))
-			continue
 		except IndexError:
 			sys.stderr.write('CSV row doesn’t have expected number of columns: {}\n'.format(csvrow))
+			continue
+		except:
+			sys.stderr.write('CSV row doesn’t look like data: {}\n'.format(csvrow))
 			continue
 
 		# Add this fix to the pool
