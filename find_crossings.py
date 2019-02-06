@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 
 # CatAmount analyzes GPS collar data to find time/space relationships.
-# Copyright (C) 2012 Michael Rickard
+# Copyright (C) 2012-2019 Michael Rickard
 #  
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
