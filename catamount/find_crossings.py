@@ -239,7 +239,7 @@ class FXDataPool(catcm.DataPool):
 
 		output = '\nCrossing Settings Are As Follows:\n'
 		output += '  * Radius: {0} meters\n'.format(self.radius)
-		output += '  * Time Cutoff: {0} hours\n'.format(self.time_cutoff / 3600)
+		output += '  * Time Cutoff: {0} hours\n'.format(self.time_cutoff // 3600)
 		output += '  * Start Date: {0}\n'.format(self.legend_start_date)
 		output += '  * End Date: {0}\n'.format(self.legend_end_date)
 		output += '\nCrossings Found:\n\n'
@@ -254,7 +254,7 @@ class FXDataPool(catcm.DataPool):
 		# Write information about the image across the bottom
 		column_1 = list()
 		column_1.append(('Radius', '{0} meters'.format(self.radius)))
-		column_1.append(('Time Cutoff', '{0} hours'.format(self.time_cutoff / 3600)))
+		column_1.append(('Time Cutoff', '{0} hours'.format(self.time_cutoff // 3600)))
 		column_1.append(('Start Date', self.legend_start_date))
 		column_1.append(('End Date', self.legend_end_date))
 
@@ -441,7 +441,7 @@ class Crossing(catcm.Cluster):
 		# Write information about the image across the bottom
 		column_1 = list()
 		column_1.append(('Radius', '{0} meters'.format(self.radius)))
-		column_1.append(('Time Cutoff', '{0} hours'.format(self.time_cutoff / 3600)))
+		column_1.append(('Time Cutoff', '{0} hours'.format(self.time_cutoff // 3600)))
 		column_1.append(('Start Date', self.legend_start_date))
 		column_1.append(('End Date', self.legend_end_date))
 
@@ -467,7 +467,7 @@ class Crossing(catcm.Cluster):
 		img_y = self.img_y(self.y)
 
 		# Draw a circle representing the design radius of the crossing
-		radius = self.radius / self.scale
+		radius = self.radius // self.scale
 		circleimg = Image.new('RGB', (radius * 2, radius * 2), catcm.image_colors['crossing'])
 		circlemask = Image.new('L', (radius * 2, radius * 2), '#000000')
 		circlemaskdraw = ImageDraw.Draw(circlemask)
