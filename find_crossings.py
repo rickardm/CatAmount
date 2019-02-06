@@ -129,7 +129,7 @@ with open(args.datafile_path, 'rt') as datafile:
 
 	# If no rows were retrieved, warn user that cat is not represented in the current data
 	if not csvrows:
-		sys.exit('No CSV data was found after checking cat ids. Cat ids were {0}'.format(','.join(args.catids)))
+		sys.exit('No CSV data was found after checking cat ids. Cat ids were {}'.format(','.join(args.catids)))
 
 	# Create a new DataPool object to work with
 	datapool = catfx.FXDataPool(args.radius, args.time_cutoff)
@@ -214,7 +214,7 @@ if args.crossingid:
 		crossing.descriptive_report(True)
 
 	# Account of what was done
-	sys.stderr.write('Crossing {0} shown.\n'.format(args.crossingid))
+	sys.stderr.write('Crossing {} shown.\n'.format(args.crossingid))
 
 # Otherwise report on all crossings
 else:
@@ -232,4 +232,4 @@ else:
 		datapool.csv_report(False)
 
 	# Account of what was done
-	sys.stderr.write('{0} crossings found.\n'.format(len(datapool.crossings)))
+	sys.stderr.write('{} crossings found.\n'.format(len(datapool.crossings)))

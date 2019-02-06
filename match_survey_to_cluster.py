@@ -169,6 +169,6 @@ for survey in surveypool.surveys:
 error_feedback = '{} fixes found in the data file.\n'.format(len(datapool.fixes))
 error_feedback += ' {} clusters found across {} cats.\n'.format(len(datapool.clusters), len(datapool.catids))
 error_feedback += ' {} surveys found in the surveys file.\n'.format(len(surveypool.surveys))
-error_feedback += ' {0} surveys matched to clusters ({1:0.1f}% success).\n'.format(success_count, 100 * (success_count / len(surveypool.surveys)))
+error_feedback += ' {} surveys matched to clusters ({:0.1f}% success).\n'.format(success_count, 100 * (success_count / len(surveypool.surveys)))
 
 sys.stderr.write(error_feedback)

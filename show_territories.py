@@ -111,7 +111,7 @@ with open(args.datafile_path, 'rt') as datafile:
 
 	# If no rows were retrieved, warn user that cat is not represented in the current data
 	if not csvrows:
-		sys.exit('No CSV data was found after checking cat ids. Cat ids were {0}.'.format(','.join(args.catids)))
+		sys.exit('No CSV data was found after checking cat ids. Cat ids were {}.'.format(','.join(args.catids)))
 
 	# Create a new DataPool object to work with
 	datapool = catst.STDataPool(args.dot_size, args.perimeter_resolution)
@@ -175,4 +175,4 @@ if args.end_date:
 datapool.create_image(imagepath, 'auto')
 
 # Accounting of what was found
-sys.stderr.write('{0} territories shown.\n'.format(len(datapool.trails)))
+sys.stderr.write('{} territories shown.\n'.format(len(datapool.trails)))

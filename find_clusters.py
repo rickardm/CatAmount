@@ -145,7 +145,7 @@ with open(args.datafile_path, 'rt') as datafile:
 
 	# If no rows were retrieved, warn user that cat is not represented in the current data
 	if not csvrows:
-		sys.exit('No CSV data was found for cat with id {0}.'.format(args.catid))
+		sys.exit('No CSV data was found for cat with id {}.'.format(args.catid))
 
 	# Create a new Trail object, which is a series of fixes
 	trail = catfc.FCTrail(args.catid, args.radius, args.time_cutoff, args.minimum_count, args.minimum_stay)
@@ -221,7 +221,7 @@ if args.clusterid:
 		cluster.descriptive_report(True)
 
 	# Account of what was done
-	sys.stderr.write('Cluster {0} shown.\n'.format(args.clusterid))
+	sys.stderr.write('Cluster {} shown.\n'.format(args.clusterid))
 
 # Otherwise report on all clusters
 else:
@@ -243,4 +243,4 @@ else:
 		trail.csv_report(False)
 
 	# Account of what was done
-	sys.stderr.write('{0} clusters found.\n'.format(len(trail.clusters)))
+	sys.stderr.write('{} clusters found.\n'.format(len(trail.clusters)))

@@ -195,4 +195,4 @@ else:
 	datapool.csv_report()
 
 # Account of what was done
-sys.stderr.write('{0} matches found.\n'.format(len(datapool.matches)))
+sys.stderr.write('{} matches found.\n'.format(len(datapool.matches)))
