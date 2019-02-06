@@ -467,7 +467,8 @@ class Crossing(catcm.Cluster):
 		img_y = self.img_y(self.y)
 
 		# Draw a circle representing the design radius of the crossing
-		radius = self.radius / self.scale
+		# Using an integer radius here because the Image.new() expect integer sizes
+		radius = self.radius // self.scale
 		circleimg = Image.new('RGB', (radius * 2, radius * 2), catcm.image_colors['crossing'])
 		circlemask = Image.new('L', (radius * 2, radius * 2), '#000000')
 		circlemaskdraw = ImageDraw.Draw(circlemask)
