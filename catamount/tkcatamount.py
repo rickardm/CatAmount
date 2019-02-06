@@ -1078,7 +1078,7 @@ class MainWindow(object):
 		script_process = subprocess.run(args, capture_output=True)
 
 		if script_process.stderr:
-			self.feedback.set(script_process.stderr)
+			self.feedback.set(script_process.stderr.decode('utf-8'))
 
 		if script_process.stdout:
 			if (function_name == 'find_clusters') and (self.cluster_text_style.get() == 'csv'):
