@@ -124,10 +124,10 @@ with open(args.datafile_path, 'rt') as datafile:
 		try:
 			new_fix = catcm.Fix(csvrow)
 		except ValueError:
-			sys.stderr.write('CSV row doesn\'t look like data: {0}\n'.format(csvrow))
+			sys.stderr.write('CSV row doesn’t look like data: {}\n'.format(csvrow))
 			continue
 		except IndexError:
-			sys.stderr.write('CSV row doesn\'t have expected number of columns: {0}\n'.format(csvrow))
+			sys.stderr.write('CSV row doesn’t have expected number of columns: {}\n'.format(csvrow))
 			continue
 
 		# Add the fix to the datapool
