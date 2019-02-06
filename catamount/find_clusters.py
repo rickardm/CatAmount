@@ -181,11 +181,11 @@ class FCTrail(catcm.Trail):
 		output = '\nCluster Settings Are As Follows:\n'
 		output += '  * Cat ID: {0}\n'.format(self.catid)
 		output += '  * Radius: {0} meters\n'.format(self.radius)
-		output += '  * Time Cutoff: {0} hours\n'.format(self.time_cutoff / 3600)
+		output += '  * Time Cutoff: {0} hours\n'.format(self.time_cutoff // 3600)
 		output += '  * Start Date: {0}\n'.format(self.legend_start_date)
 		output += '  * End Date: {0}\n'.format(self.legend_end_date)
 		output += '  * Minimum Count: {0} fixes\n'.format(self.minimum_count)
-		output += '  * Minimum Stay: {0} hours\n'.format(self.minimum_stay / 3600)
+		output += '  * Minimum Stay: {0} hours\n'.format(self.minimum_stay // 3600)
 		output += '\nClusters Found:\n\n'
 		sys.stdout.write(output)
 
@@ -199,11 +199,11 @@ class FCTrail(catcm.Trail):
 		column_1 = list()		
 		column_1.append(('Cat ID', self.catid))
 		column_1.append(('Radius', '{0} meters'.format(self.radius)))
-		column_1.append(('Time Cutoff', '{0} hours'.format(self.time_cutoff / 3600)))
+		column_1.append(('Time Cutoff', '{0} hours'.format(self.time_cutoff // 3600)))
 		column_1.append(('Start Date', self.legend_start_date))
 		column_1.append(('End Date', self.legend_end_date))
 		column_1.append(('Min. Count', '{0} fixes'.format(self.minimum_count)))
-		column_1.append(('Min. Stay', '{0} hours'.format(self.minimum_stay / 3600)))
+		column_1.append(('Min. Stay', '{0} hours'.format(self.minimum_stay // 3600)))
 
 		column_2 = list()
 		column_2.append(('Clusters Found', '{0}'.format(len(self.clusters))))
@@ -218,7 +218,7 @@ class FCTrail(catcm.Trail):
 		for cluster in self.clusters:
 			img_x = self.img_x(cluster.x)
 			img_y = self.img_y(cluster.y)
-			radius = self.radius / self.scale
+			radius = self.radius // self.scale
 			self.fgdraw.ellipse(
 				[(img_x - radius, img_y - radius), (img_x + radius, img_y + radius)],
 				catcm.image_colors['cluster'],
@@ -287,7 +287,7 @@ class FCCluster(catcm.Cluster):
 		else:
 			output += '  Max Excursion From Center (Outside Cluster): None\n'
 		output += '  Site Fidelity ((No. Inside / Total No.) * 100): {:0.2f}%\n'.format(self.fidelity)
-		output += '  Average Time Between Points: {:0.1f} hours\n'.format((self.elapsed_time / (len(self.all_fixes) - 1)) / 3600.0)
+		output += '  Average Time Between Points: {:0.1f} hours\n'.format((self.elapsed_time / (len(self.all_fixes) - 1)) / 3600)
 		sys.stdout.write(output)
 
 		if all_points:
@@ -304,11 +304,11 @@ class FCCluster(catcm.Cluster):
 		column_1 = list()
 		column_1.append(('Cat ID', self.catid))
 		column_1.append(('Radius', '{0} meters'.format(self.radius)))
-		column_1.append(('Time Cutoff', '{0} hours'.format(self.time_cutoff / 3600)))
+		column_1.append(('Time Cutoff', '{0} hours'.format(self.time_cutoff // 3600)))
 		column_1.append(('Start Date', self.legend_start_date))
 		column_1.append(('End Date', self.legend_end_date))
 		column_1.append(('Min. Count', '{0}'.format(self.minimum_count)))
-		column_1.append(('Min. Stay', '{0} hours'.format(self.minimum_stay / 3600)))
+		column_1.append(('Min. Stay', '{0} hours'.format(self.minimum_stay // 3600)))
 
 		column_2 = list()
 		column_2.append(('Cluster ID', self.id))
@@ -327,7 +327,7 @@ class FCCluster(catcm.Cluster):
 		img_y = self.img_y(self.y)
 
 		# Draw a circle representing the design radius of the cluster
-		radius = self.radius / self.scale
+		radius = self.radius // self.scale
 		circleimg = Image.new('RGB', (radius * 2, radius * 2), catcm.image_colors['cluster'])
 		circlemask = Image.new('L', (radius * 2, radius * 2), '#000000')
 		circlemaskdraw = ImageDraw.Draw(circlemask)
