@@ -32,7 +32,7 @@ from csv import reader as csvreader
 
 import catamount.common as catcm
 import catamount.find_crossings as catfx
-import catamount.sun_metrics as catsm
+import catamount.sunmetrics as catsm
 
 
 # BEGIN SCRIPT
