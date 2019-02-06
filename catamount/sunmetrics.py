@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 
 # SunMetrics calculates the position of the sun at a given time and place.
-# Copyright (C) 2012 Michael Rickard
+# Copyright (C) 2012-2019 Michael Rickard
 # 
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -38,11 +38,15 @@ import pytz
 # For all datetime.datetime queries, specify whether the query is in
 # "local" time or "utc" time.
 
-# Study Area
-default_latitude = 43.725107668672
-default_longitude = -110.405046025196
-default_tz_local = 'US/Mountain'
+# Teton Cougar Project, 2012
+#default_latitude = 43.725107668672
+#default_longitude = -110.405046025196
+#default_tz_local = 'US/Mountain'
 
+# Mongolia, 2019
+default_latitude = 47.92027778
+default_longitude = 106.91722222
+default_tz_local = 'Asia/Ulaanbaatar'
 
 # CLASSES
 
@@ -80,7 +84,7 @@ class SunMetrics(object):
 
 		# Julian Date. Calculation from (Danby 1988, p. 207; Sinnott 1991, p. 183).
 		# This equation contains an approximation making it only useful for years between 1901 and 2099
-		Julian_Date = (367 * self.datetime_utc.year) - (7 * (self.datetime_utc.year + ((self.datetime_utc.month + 9) / 12)) / 4) + ((275 * self.datetime_utc.month) / 9) + self.datetime_utc.day + 1721013.5 + utc_decimal_time
+		Julian_Date = (367 * self.datetime_utc.year) - (7 * (self.datetime_utc.year + ((self.datetime_utc.month + 9) // 12)) // 4) + ((275 * self.datetime_utc.month) // 9) + self.datetime_utc.day + 1721013.5 + utc_decimal_time
 
 		# Julian century, hundreds of years since 2000-01
 		Julian_century = (Julian_Date - 2451545) / 36525
@@ -155,33 +159,33 @@ class SunMetrics(object):
 		#solar_zenith_angle = math.degrees( math.acos( (math.sin(math.radians(self.latitude)) * math.sin(math.radians(S_Declination))) + (math.cos(math.radians(self.latitude)) * math.cos(math.radians(S_Declination)) * math.cos(math.radians(hour_angle))) ) )
 
 		## Solar Elevatian Angle (degrees)
-		#solar_elevation_angle = 90 - solar_zenith_angle
+		#self.solar_elevation_angle = 90 - solar_zenith_angle
 
 		## Approximate Atmospheric Refraction (degrees)
-		#if 85 <= solar_elevation_angle < 180:
+		#if 85 <= self.solar_elevation_angle < 180:
 		# 	pre_refraction = 0
-		#elif 5 <= solar_elevation_angle < 85:
-		# 	pre_refraction = (58.1 / math.tan(math.radians(solar_elevation_angle))) - (0.07 / math.pow(math.tan(math.radians(solar_elevation_angle)), 3)) + (0.000086 / math.pow(math.tan(math.radians(solar_elevation_angle)), 5))
-		#elif -0.575 <= solar_elevation_angle < 5:
+		#elif 5 <= self.solar_elevation_angle < 85:
+		# 	pre_refraction = (58.1 / math.tan(math.radians(self.solar_elevation_angle))) - (0.07 / math.pow(math.tan(math.radians(self.solar_elevation_angle)), 3)) + (0.000086 / math.pow(math.tan(math.radians(self.solar_elevation_angle)), 5))
+		#elif -0.575 <= self.solar_elevation_angle < 5:
 		# 	# Spreadsheet equation:
-		# 	#pre_refraction = 1735 + solar_elevation_angle * (-518.2 + solar_elevation_angle * (103.4 + solar_elevation_angle * (-12.79 + solar_elevation_angle * 0.711)))
+		# 	#pre_refraction = 1735 + self.solar_elevation_angle * (-518.2 + self.solar_elevation_angle * (103.4 + self.solar_elevation_angle * (-12.79 + self.solar_elevation_angle * 0.711)))
 		# 	# Print equation:
-		# 	pre_refraction = 1735 - (518.2 * solar_elevation_angle) + (103.4 * math.pow(solar_elevation_angle, 2)) - (12.79 * math.pow(solar_elevation_angle, 3)) + (0.711 * math.pow(solar_elevation_angle, 4))
+		# 	pre_refraction = 1735 - (518.2 * self.solar_elevation_angle) + (103.4 * math.pow(self.solar_elevation_angle, 2)) - (12.79 * math.pow(self.solar_elevation_angle, 3)) + (0.711 * math.pow(self.solar_elevation_angle, 4))
 		#else:
 		# 	# 20.772 in spreadsheet, 20.774 in print:
-		# 	pre_refraction = -20.774 / math.tan(math.radians(solar_elevation_angle))
+		# 	pre_refraction = -20.774 / math.tan(math.radians(self.solar_elevation_angle))
 		# 
 		#atmos_refraction = pre_refraction / 3600
 
 		## Solar Elevation Angle corrected for atmospheric refraction
-		#solar_elevation_refraction = solar_elevation_angle + atmos_refraction
+		#solar_elevation_refraction = self.solar_elevation_angle + atmos_refraction
 
 		## Solar Azimuth Angle (degrees clockwise from North)
 		#pre_azimuth_angle = math.degrees(math.acos(((math.sin(math.radians(self.latitude)) * math.cos(math.radians(solar_zenith_angle))) - math.sin(math.radians(S_Declination))) / (math.cos(math.radians(self.latitude)) * math.sin(math.radians(solar_zenith_angle)))))
 		#if hour_angle > 0:
-		# 	solar_azimuth_angle = (pre_azimuth_angle - 180) % 360
+		# 	self.solar_azimuth_angle = (pre_azimuth_angle - 180) % 360
 		#else:
-		# 	solar_azimuth_angle = (540 - pre_azimuth_angle) % 360
+		# 	self.solar_azimuth_angle = (540 - pre_azimuth_angle) % 360
 
 		self.solar_noon_utc = self.decimal_day_to_utc_datetime(solar_noon)
 		self.sunrise_utc = self.decimal_day_to_utc_datetime(sunrise)
