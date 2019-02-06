@@ -218,7 +218,7 @@ class FCTrail(catcm.Trail):
 		for cluster in self.clusters:
 			img_x = self.img_x(cluster.x)
 			img_y = self.img_y(cluster.y)
-			radius = self.radius // self.scale
+			radius = self.radius / self.scale
 			self.fgdraw.ellipse(
 				[(img_x - radius, img_y - radius), (img_x + radius, img_y + radius)],
 				catcm.image_colors['cluster'],
@@ -327,7 +327,7 @@ class FCCluster(catcm.Cluster):
 		img_y = self.img_y(self.y)
 
 		# Draw a circle representing the design radius of the cluster
-		radius = self.radius // self.scale
+		radius = self.radius / self.scale
 		circleimg = Image.new('RGB', (radius * 2, radius * 2), catcm.image_colors['cluster'])
 		circlemask = Image.new('L', (radius * 2, radius * 2), '#000000')
 		circlemaskdraw = ImageDraw.Draw(circlemask)

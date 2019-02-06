@@ -97,7 +97,7 @@ class FWDataPool(catcm.DataPool):
 
 		output = '\nWhodunit Settings Are As Follows:\n'
 		output += '  * Radius: {0} meters\n'.format(self.radius)
-		output += '  * Time Cutoff: {0} hours\n'.format(self.time_cutoff / 3600)
+		output += '  * Time Cutoff: {0} hours\n'.format(self.time_cutoff // 3600)
 		output += '  * Request Date: {0}\n'.format(self.legend_date)
 		output += '  * Request X: {0}\n'.format(self.x)
 		output += '  * Request Y: {0}\n'.format(self.y)
@@ -118,7 +118,7 @@ class FWDataPool(catcm.DataPool):
 		# Write information about the image across the bottom
 		column_1 = list()
 		column_1.append(('Radius', '{0} meters'.format(self.radius)))
-		column_1.append(('Time Cutoff', '{0} hours'.format(self.time_cutoff / 3600)))
+		column_1.append(('Time Cutoff', '{0} hours'.format(self.time_cutoff // 3600)))
 		column_1.append(('Date', self.legend_date))
 		column_1.append(('X', '{0}'.format(self.x)))
 		column_1.append(('Y', '{0}'.format(self.y)))
