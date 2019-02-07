@@ -42,7 +42,7 @@ from PIL import ImageFont
 # CONSTANTS/GLOBALS
 
 APP_NAME = 'CatAmount'
-APP_VERSION = '15873.653'
+APP_VERSION = '15879.738'
 APP_COPYRIGHT = 'Copyright (C) 2019 Michael Rickard'
 
 DATE_FMT_ID = '%Y%m%d-%H%M'

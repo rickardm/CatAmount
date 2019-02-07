@@ -1,3 +1,9 @@
+2019-02-07 00:04 utc - MRR - 15879.738
+--------------------------------------
+* Update the whole project from Python 2 to Python 3 and fix all the
+  problems that happened because of that. Some general cleanup to get
+  ready for 2019.
+
 2019-01-31 22:02 utc - MRR - 15873.653
 --------------------------------------
 * Make the order of data fields within the CSV data file configurable
